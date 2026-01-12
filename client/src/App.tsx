@@ -20,6 +20,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Legal from "./pages/Legal";
 import Disclaimer from "./pages/Disclaimer";
+import Contact from "./pages/Contact";
 
 function Router() {
   return (
@@ -120,6 +121,13 @@ function Router() {
         {() => (
           <Layout>
             <Disclaimer />
+          </Layout>
+        )}
+      </Route>
+      <Route path="/contact">
+        {() => (
+          <Layout>
+            <Contact />
           </Layout>
         )}
       </Route>

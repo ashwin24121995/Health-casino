@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -10,159 +12,190 @@ export default function Contact() {
     message: "",
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    alert("Thank you for your message! We will get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      toast.success("Thank you for your message! We'll get back to you soon.");
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary via-purple-900 to-secondary py-20 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted">
+      <section className="bg-gradient-to-r from-primary via-purple-900 to-secondary py-16">
         <div className="container mx-auto px-4">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">Contact Us</h1>
-          <p className="text-xl text-gray-200 max-w-2xl">
-            Have questions? We are here to help 24/7!
-          </p>
+          <h1 className="text-4xl md:text-5xl font-bold text-white">Contact Us</h1>
+          <p className="text-gray-200 mt-2">Get in Touch with Our Support Team</p>
         </div>
       </section>
 
-      {/* Contact Info */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {/* Email */}
-            <div className="bg-card rounded-xl p-8 shadow-lg text-center">
-              <div className="bg-gradient-to-br from-secondary to-accent rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                <Mail className="text-white" size={32} />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-card-foreground">Email</h3>
-              <p className="text-muted-foreground">support@luckylotus.com</p>
-            </div>
-
-            {/* Phone */}
-            <div className="bg-card rounded-xl p-8 shadow-lg text-center">
-              <div className="bg-gradient-to-br from-accent to-secondary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                <Phone className="text-white" size={32} />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-card-foreground">Phone</h3>
-              <p className="text-muted-foreground">+1 (800) 123-4567</p>
-            </div>
-
-            {/* Address */}
-            <div className="bg-card rounded-xl p-8 shadow-lg text-center">
-              <div className="bg-gradient-to-br from-primary to-secondary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                <MapPin className="text-white" size={32} />
-              </div>
-              <h3 className="text-xl font-bold mb-2 text-card-foreground">Address</h3>
-              <p className="text-muted-foreground">123 Casino Lane, Las Vegas, NV</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Form */}
-      <section className="py-20 bg-card">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <h2 className="text-4xl font-bold text-center mb-12 text-card-foreground">Send us a Message</h2>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Name */}
+      <section className="py-16">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="space-y-8">
               <div>
-                <label className="block text-card-foreground font-semibold mb-2">Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-secondary"
-                  placeholder="Your Name"
-                />
+                <h2 className="text-2xl font-bold text-card-foreground mb-4">Get in Touch</h2>
+                <p className="text-muted-foreground mb-6">
+                  Have questions or feedback? We'd love to hear from you! Our support team is here to help.
+                </p>
               </div>
 
-              {/* Email */}
-              <div>
-                <label className="block text-card-foreground font-semibold mb-2">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-secondary"
-                  placeholder="your@email.com"
-                />
+              <div className="bg-card rounded-xl p-6 shadow-lg">
+                <h3 className="text-lg font-semibold text-card-foreground mb-2">Email Support</h3>
+                <p className="text-muted-foreground mb-4">
+                  Send us an email and we'll respond as soon as possible.
+                </p>
+                <div className="space-y-2">
+                  <p className="text-muted-foreground">
+                    <strong>General Support:</strong><br />
+                    <a href="mailto:support@healthmitan.com" className="text-accent hover:underline">
+                      support@healthmitan.com
+                    </a>
+                  </p>
+                  <p className="text-muted-foreground">
+                    <strong>Technical Issues:</strong><br />
+                    <a href="mailto:tech@healthmitan.com" className="text-accent hover:underline">
+                      tech@healthmitan.com
+                    </a>
+                  </p>
+                  <p className="text-muted-foreground">
+                    <strong>Legal Inquiries:</strong><br />
+                    <a href="mailto:legal@healthmitan.com" className="text-accent hover:underline">
+                      legal@healthmitan.com
+                    </a>
+                  </p>
+                </div>
               </div>
 
-              {/* Subject */}
-              <div>
-                <label className="block text-card-foreground font-semibold mb-2">Subject</label>
-                <input
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-secondary"
-                  placeholder="How can we help?"
-                />
+              <div className="bg-card rounded-xl p-6 shadow-lg">
+                <h3 className="text-lg font-semibold text-card-foreground mb-4">Company Information</h3>
+                <div className="space-y-3 text-muted-foreground text-sm">
+                  <p>
+                    <strong>Health Mitan Private Limited</strong><br />
+                    C/O Murit Lal Karsh<br />
+                    Vill Kot, Kasdol<br />
+                    Raipur - 493335<br />
+                    Chhattisgarh, India
+                  </p>
+                  <p>
+                    <strong>CIN:</strong> U86909CT2023PTC014998<br />
+                    <strong>PAN:</strong> AWRPH8122K<br />
+                    <strong>GST:</strong> 22AAGCH9149C1ZR
+                  </p>
+                </div>
               </div>
 
-              {/* Message */}
-              <div>
-                <label className="block text-card-foreground font-semibold mb-2">Message</label>
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  rows={6}
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-secondary resize-none"
-                  placeholder="Your message..."
-                ></textarea>
+              <div className="bg-muted rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-card-foreground mb-2">Response Time</h3>
+                <p className="text-muted-foreground text-sm">
+                  We typically respond to all inquiries within 24-48 business hours. Thank you for your patience!
+                </p>
               </div>
-
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                className="w-full bg-gradient-to-r from-secondary to-accent text-white hover:opacity-90 font-bold py-3 text-lg"
-              >
-                SEND MESSAGE
-              </Button>
-            </form>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-foreground">Frequently Asked Questions</h2>
-          <div className="max-w-2xl mx-auto space-y-6">
-            <div className="bg-card rounded-xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold mb-2 text-card-foreground">What are your support hours?</h3>
-              <p className="text-muted-foreground">
-                We provide 24/7 customer support to assist you with any questions or concerns.
-              </p>
             </div>
-            <div className="bg-card rounded-xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold mb-2 text-card-foreground">How long does it take to get a response?</h3>
-              <p className="text-muted-foreground">
-                We typically respond to inquiries within 24 hours during business days.
-              </p>
-            </div>
-            <div className="bg-card rounded-xl p-6 shadow-lg">
-              <h3 className="text-xl font-bold mb-2 text-card-foreground">Can I report a technical issue?</h3>
-              <p className="text-muted-foreground">
-                Yes! Please describe the issue in detail and include screenshots if possible.
+
+            <div className="bg-card rounded-xl p-8 shadow-lg">
+              <h2 className="text-2xl font-bold text-card-foreground mb-6">Send us a Message</h2>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-card-foreground mb-2">
+                    Full Name
+                  </label>
+                  <Input
+                    id="name"
+                    name="name"
+                    type="text"
+                    placeholder="Your name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-card-foreground mb-2">
+                    Email Address
+                  </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="your.email@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="subject" className="block text-sm font-medium text-card-foreground mb-2">
+                    Subject
+                  </label>
+                  <Input
+                    id="subject"
+                    name="subject"
+                    type="text"
+                    placeholder="What is this about?"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className="w-full"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-card-foreground mb-2">
+                    Message
+                  </label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    placeholder="Your message here..."
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full min-h-[150px]"
+                  />
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-accent to-cyan-400 hover:from-accent/90 hover:to-cyan-400/90 text-white font-semibold py-2 rounded-lg transition-all"
+                >
+                  {isSubmitting ? "Sending..." : "Send Message"}
+                </Button>
+              </form>
+
+              <p className="text-xs text-muted-foreground mt-4 text-center">
+                We respect your privacy. Your information will only be used to respond to your inquiry.
               </p>
             </div>
           </div>

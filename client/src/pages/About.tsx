@@ -149,6 +149,36 @@ export default function About() {
         </div>
       </section>
 
+      {/* Company Information */}
+      <section className="py-20 bg-card">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-12 text-card-foreground">About Our Company</h2>
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h3 className="text-2xl font-bold mb-4 text-card-foreground">Health Mitan Private Limited</h3>
+              <p className="text-muted-foreground mb-4">
+                Lucky Lotus is operated by Health Mitan Private Limited, a registered company committed to providing safe, entertaining, and responsible gaming experiences.
+              </p>
+              <div className="bg-background rounded-lg p-6 space-y-2">
+                <p className="text-muted-foreground"><strong>Legal Name:</strong> Health Mitan Private Limited</p>
+                <p className="text-muted-foreground"><strong>CIN:</strong> U86909CT2023PTC014998</p>
+                <p className="text-muted-foreground"><strong>PAN:</strong> AWRPH8122K</p>
+                <p className="text-muted-foreground"><strong>GST:</strong> 22AAGCH9149C1ZR</p>
+                <p className="text-muted-foreground"><strong>Address:</strong> C/O Murit Lal Karsh, Vill Kot, Kasdol, Raipur-493335, Chhattisgarh, India</p>
+                <p className="text-muted-foreground"><strong>Website:</strong> <a href="https://healthmitan.com/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">https://healthmitan.com/</a></p>
+              </div>
+            </div>
+            <div>
+              <img
+                src="/images/health-mitan-logo.png"
+                alt="Health Mitan Logo"
+                className="rounded-xl shadow-2xl max-w-full h-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 text-center">
@@ -158,7 +188,7 @@ export default function About() {
           <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
             Experience the magic of Lucky Lotus and become part of our amazing gaming community.
           </p>
-          <Link href="/play-now">
+          <Link href="/games">
             <a className="no-underline">
               <Button className="bg-gradient-to-r from-secondary to-accent text-white hover:opacity-90 font-bold px-12 py-4 text-xl">
                 START PLAYING NOW
