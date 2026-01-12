@@ -31,11 +31,7 @@ export default function Header() {
                 Games
               </a>
             </Link>
-            <Link href="/play-now">
-              <a className="text-white hover:text-accent transition-colors font-medium">
-                Play Now
-              </a>
-            </Link>
+
             <Link href="/about">
               <a className="text-white hover:text-accent transition-colors font-medium">
                 About
@@ -80,14 +76,7 @@ export default function Header() {
                 Games
               </a>
             </Link>
-            <Link href="/play-now">
-              <a
-                className="text-white hover:text-accent transition-colors font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                Play Now
-              </a>
-            </Link>
+
             <Link href="/about">
               <a
                 className="text-white hover:text-accent transition-colors font-medium"

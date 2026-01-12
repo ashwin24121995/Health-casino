@@ -6,7 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import Layout from "./components/Layout";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-import PlayNow from "./pages/PlayNow";
+
 import About from "./pages/About";
 import GamesHub from "./pages/GamesHub";
 import Mines from "./pages/games/Mines";
@@ -14,6 +14,8 @@ import Slots from "./pages/games/Slots";
 import Plinko from "./pages/games/Plinko";
 import Diamonds from "./pages/games/Diamonds";
 import Roulette from "./pages/games/Roulette";
+import FairPolicy from "./pages/FairPolicy";
+import ResponsibleGaming from "./pages/ResponsibleGaming";
 
 function Router() {
   return (
@@ -25,13 +27,7 @@ function Router() {
           </Layout>
         )}
       </Route>
-      <Route path={"/play-now"}>
-        {() => (
-          <Layout>
-            <PlayNow />
-          </Layout>
-        )}
-      </Route>
+
       <Route path={"/about"}>
         {() => (
           <Layout>
@@ -60,6 +56,20 @@ function Router() {
       </Route>
       <Route path="/game/roulette">
         {() => <Roulette />}
+      </Route>
+      <Route path="/fair-policy">
+        {() => (
+          <Layout>
+            <FairPolicy />
+          </Layout>
+        )}
+      </Route>
+      <Route path="/responsible-gaming">
+        {() => (
+          <Layout>
+            <ResponsibleGaming />
+          </Layout>
+        )}
       </Route>
       <Route path={"/404"}>
         {() => (

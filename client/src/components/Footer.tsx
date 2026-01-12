@@ -68,6 +68,16 @@ export default function Footer() {
                   <a className="hover:text-accent transition-colors">Disclaimer</a>
                 </Link>
               </li>
+              <li>
+                <Link href="/fair-policy">
+                  <a className="hover:text-accent transition-colors">Fair Play Policy</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/responsible-gaming">
+                  <a className="hover:text-accent transition-colors">Responsible Gaming</a>
+                </Link>
+              </li>
             </ul>
           </div>
 
