@@ -3,6 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Layout from "./components/Layout";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import PlayNow from "./pages/PlayNow";
@@ -17,18 +18,64 @@ import DreamCatcher from "./pages/games/DreamCatcher";
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/play-now"} component={PlayNow} />
-      <Route path={"/about"} component={About} />
-      <Route path={"/games"} component={GamesHub} />
-      <Route path={"/game/mines"} component={Mines} />
-      <Route path={"/game/slots"} component={Slots} />
-      <Route path={"/game/plinko"} component={Plinko} />
-      <Route path={"/game/diamonds"} component={Diamonds} />
-      <Route path={"/game/dreamcatcher"} component={DreamCatcher} />
-      <Route path={"/404"} component={NotFound} />
+      <Route path={"/"}>
+        {() => (
+          <Layout>
+            <Home />
+          </Layout>
+        )}
+      </Route>
+      <Route path={"/play-now"}>
+        {() => (
+          <Layout>
+            <PlayNow />
+          </Layout>
+        )}
+      </Route>
+      <Route path={"/about"}>
+        {() => (
+          <Layout>
+            <About />
+          </Layout>
+        )}
+      </Route>
+      <Route path={"/games"}>
+        {() => (
+          <Layout>
+            <GamesHub />
+          </Layout>
+        )}
+      </Route>
+      <Route path={"/game/mines"}>
+        {() => <Mines />}
+      </Route>
+      <Route path={"/game/slots"}>
+        {() => <Slots />}
+      </Route>
+      <Route path={"/game/plinko"}>
+        {() => <Plinko />}
+      </Route>
+      <Route path={"/game/diamonds"}>
+        {() => <Diamonds />}
+      </Route>
+      <Route path={"/game/dreamcatcher"}>
+        {() => <DreamCatcher />}
+      </Route>
+      <Route path={"/404"}>
+        {() => (
+          <Layout>
+            <NotFound />
+          </Layout>
+        )}
+      </Route>
       {/* Final fallback route */}
-      <Route component={NotFound} />
+      <Route>
+        {() => (
+          <Layout>
+            <NotFound />
+          </Layout>
+        )}
+      </Route>
     </Switch>
   );
 }

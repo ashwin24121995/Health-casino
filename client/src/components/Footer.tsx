@@ -27,6 +27,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/games">
+                  <a className="hover:text-accent transition-colors">Games</a>
+                </Link>
+              </li>
+              <li>
                 <Link href="/play-now">
                   <a className="hover:text-accent transition-colors">Play Now</a>
                 </Link>
@@ -36,23 +41,13 @@ export default function Footer() {
                   <a className="hover:text-accent transition-colors">About Us</a>
                 </Link>
               </li>
-              <li>
-                <Link href="/community">
-                  <a className="hover:text-accent transition-colors">Community</a>
-                </Link>
-              </li>
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Legal */}
           <div>
-            <h4 className="font-bold text-lg mb-4">Support</h4>
+            <h4 className="font-bold text-lg mb-4">Legal</h4>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/contact">
-                  <a className="hover:text-accent transition-colors">Contact Us</a>
-                </Link>
-              </li>
               <li>
                 <Link href="/privacy">
                   <a className="hover:text-accent transition-colors">Privacy Policy</a>
@@ -65,7 +60,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/legal">
-                  <a className="hover:text-accent transition-colors">Legal</a>
+                  <a className="hover:text-accent transition-colors">Legal Information</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/disclaimer">
+                  <a className="hover:text-accent transition-colors">Disclaimer</a>
                 </Link>
               </li>
             </ul>
@@ -115,14 +115,6 @@ export default function Footer() {
           <p>
             &copy; {currentYear} Lucky Lotus Casino. All rights reserved. | For amusement purposes only. Must be 21+
           </p>
-          <div className="flex gap-4 mt-4 md:mt-0">
-            <Link href="/disclaimer">
-              <a className="hover:text-accent transition-colors">Disclaimer</a>
-            </Link>
-            <Link href="/community">
-              <a className="hover:text-accent transition-colors">Community Rules</a>
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

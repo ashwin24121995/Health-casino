@@ -1,91 +1,140 @@
-import { useState, useEffect } from "react";
+import { useReducer } from "react";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, Info } from "lucide-react";
 
-export default function Mines() {
-  const GRID_SIZE = 25; // 5x5 grid
-  const INITIAL_MINES = 5;
-  const INITIAL_CREDITS = 1000000;
-  const BET_AMOUNT = 10000;
+const GRID_SIZE = 25;
+const INITIAL_MINES = 5;
+const INITIAL_CREDITS = 1000000;
+const BET_AMOUNT = 10000;
 
-  const [credits, setCredits] = useState(INITIAL_CREDITS);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [revealed, setRevealed] = useState<Set<number>>(new Set());
-  const [mines, setMines] = useState<Set<number>>(new Set());
-  const [gameOver, setGameOver] = useState(false);
-  const [won, setWon] = useState(false);
-  const [currentMultiplier, setCurrentMultiplier] = useState(1);
-  const [message, setMessage] = useState("Click START to begin!");
-  const [showInfo, setShowInfo] = useState(false);
+interface GameState {
+  credits: number;
+  gameStarted: boolean;
+  revealed: Set<number>;
+  mines: Set<number>;
+  gameOver: boolean;
+  won: boolean;
+  currentMultiplier: number;
+  message: string;
+}
 
-  const startGame = () => {
-    if (credits < BET_AMOUNT) {
-      setMessage("Not enough credits! Resetting...");
-      setCredits(INITIAL_CREDITS);
-      return;
+type GameAction =
+  | { type: "START_GAME" }
+  | { type: "CLICK_TILE"; index: number }
+  | { type: "CASH_OUT" }
+  | { type: "RESET_GAME" };
+
+const initialState: GameState = {
+  credits: INITIAL_CREDITS,
+  gameStarted: false,
+  revealed: new Set(),
+  mines: new Set(),
+  gameOver: false,
+  won: false,
+  currentMultiplier: 1,
+  message: "Click START to begin!",
+};
+
+function gameReducer(state: GameState, action: GameAction): GameState {
+  switch (action.type) {
+    case "START_GAME": {
+      if (state.credits < BET_AMOUNT) {
+        return {
+          ...state,
+          credits: INITIAL_CREDITS,
+          message: "Not enough credits! Resetting...",
+        };
+      }
+
+      const newMines = new Set<number>();
+      while (newMines.size < INITIAL_MINES) {
+        newMines.add(Math.floor(Math.random() * GRID_SIZE));
+      }
+
+      return {
+        ...state,
+        credits: state.credits - BET_AMOUNT,
+        gameStarted: true,
+        gameOver: false,
+        won: false,
+        revealed: new Set(),
+        mines: newMines,
+        currentMultiplier: 1,
+        message: "Click tiles to find safe spots!",
+      };
     }
 
-    const newMines = new Set<number>();
-    while (newMines.size < INITIAL_MINES) {
-      newMines.add(Math.floor(Math.random() * GRID_SIZE));
-    }
+    case "CLICK_TILE": {
+      if (!state.gameStarted || state.revealed.has(action.index) || state.gameOver || state.won) {
+        return state;
+      }
 
-    setCredits(credits - BET_AMOUNT);
-    setMines(newMines);
-    setRevealed(new Set());
-    setGameStarted(true);
-    setGameOver(false);
-    setWon(false);
-    setCurrentMultiplier(1);
-    setMessage("Click tiles to find safe spots!");
-  };
+      const newRevealed = new Set(state.revealed);
+      newRevealed.add(action.index);
 
-  const handleTileClick = (index: number) => {
-    if (!gameStarted || revealed.has(index) || gameOver || won) return;
+      if (state.mines.has(action.index)) {
+        // Hit a mine - game over
+        return {
+          ...state,
+          revealed: newRevealed,
+          gameOver: true,
+          gameStarted: false,
+          message: "💣 Hit a mine! Game Over!",
+        };
+      } else {
+        // Safe tile
+        const safeCount = newRevealed.size;
+        const newMultiplier = 1 + safeCount * 0.1;
 
-    const newRevealed = new Set(revealed);
-    newRevealed.add(index);
-    setRevealed(newRevealed);
+        if (safeCount === GRID_SIZE - INITIAL_MINES) {
+          // Won - found all safe tiles
+          const winnings = Math.floor(BET_AMOUNT * newMultiplier * 2);
+          return {
+            ...state,
+            revealed: newRevealed,
+            currentMultiplier: newMultiplier,
+            won: true,
+            gameStarted: false,
+            credits: state.credits + winnings,
+            message: `🎉 You Won! ${winnings.toLocaleString()} credits!`,
+          };
+        }
 
-    if (mines.has(index)) {
-      setGameOver(true);
-      setMessage("💣 Hit a mine! Game Over!");
-      setGameStarted(false);
-    } else {
-      const safeCount = newRevealed.size;
-      const newMultiplier = 1 + safeCount * 0.1;
-      setCurrentMultiplier(newMultiplier);
-
-      if (safeCount === GRID_SIZE - INITIAL_MINES) {
-        const winnings = Math.floor(BET_AMOUNT * newMultiplier * 2);
-        setCredits(credits - BET_AMOUNT + winnings);
-        setWon(true);
-        setMessage(`🎉 You Won! ${winnings.toLocaleString()} credits!`);
-        setGameStarted(false);
+        return {
+          ...state,
+          revealed: newRevealed,
+          currentMultiplier: newMultiplier,
+          message: "Click tiles to find safe spots!",
+        };
       }
     }
-  };
 
-  const handleCashOut = () => {
-    if (!gameStarted || currentMultiplier === 1) return;
+    case "CASH_OUT": {
+      if (!state.gameStarted || state.currentMultiplier === 1) {
+        return state;
+      }
 
-    const winnings = Math.floor(BET_AMOUNT * currentMultiplier);
-    setCredits(credits - BET_AMOUNT + winnings);
-    setMessage(`Cashed out! Won ${winnings.toLocaleString()} credits!`);
-    setGameStarted(false);
-    setGameOver(true);
-  };
+      const winnings = Math.floor(BET_AMOUNT * state.currentMultiplier);
+      return {
+        ...state,
+        credits: state.credits + winnings,
+        gameStarted: false,
+        gameOver: true,
+        message: `Cashed out! Won ${winnings.toLocaleString()} credits!`,
+      };
+    }
 
-  const resetGame = () => {
-    setCredits(INITIAL_CREDITS);
-    setGameStarted(false);
-    setRevealed(new Set());
-    setMines(new Set());
-    setGameOver(false);
-    setWon(false);
-    setCurrentMultiplier(1);
-    setMessage("Click START to begin!");
-  };
+    case "RESET_GAME": {
+      return initialState;
+    }
+
+    default:
+      return state;
+  }
+}
+
+export default function Mines() {
+  const [state, dispatch] = useReducer(gameReducer, initialState);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary via-purple-900 to-secondary pb-20">
@@ -98,7 +147,7 @@ export default function Mines() {
           </div>
           <div className="text-right">
             <div className="text-cyan-400 text-sm">Your Credits</div>
-            <div className="text-3xl font-bold text-white">{credits.toLocaleString()}</div>
+            <div className="text-3xl font-bold text-white">{state.credits.toLocaleString()}</div>
           </div>
         </div>
       </div>
@@ -114,17 +163,17 @@ export default function Mines() {
                   {Array.from({ length: GRID_SIZE }).map((_, index) => (
                     <button
                       key={index}
-                      onClick={() => handleTileClick(index)}
-                      disabled={!gameStarted || revealed.has(index)}
+                      onClick={() => dispatch({ type: "CLICK_TILE", index })}
+                      disabled={!state.gameStarted || state.revealed.has(index)}
                       className={`aspect-square rounded-lg font-bold text-2xl transition-all transform hover:scale-105 ${
-                        revealed.has(index)
-                          ? mines.has(index)
+                        state.revealed.has(index)
+                          ? state.mines.has(index)
                             ? "bg-red-600 text-white"
                             : "bg-green-600 text-white"
                           : "bg-gradient-to-br from-secondary to-accent text-white hover:shadow-lg shadow-md"
-                      } ${!gameStarted && "opacity-50 cursor-not-allowed"}`}
+                      } ${!state.gameStarted && "opacity-50 cursor-not-allowed"}`}
                     >
-                      {revealed.has(index) && (mines.has(index) ? "💣" : "✓")}
+                      {state.revealed.has(index) && (state.mines.has(index) ? "💣" : "✓")}
                     </button>
                   ))}
                 </div>
@@ -133,7 +182,7 @@ export default function Mines() {
                 <div className="grid grid-cols-3 gap-4 mb-6">
                   <div className="bg-cyan-400/10 rounded-xl p-4 border border-cyan-400/30 text-center">
                     <div className="text-cyan-400 text-sm">Safe Tiles</div>
-                    <div className="text-2xl font-bold text-white">{revealed.size}/{GRID_SIZE - INITIAL_MINES}</div>
+                    <div className="text-2xl font-bold text-white">{state.revealed.size}/{GRID_SIZE - INITIAL_MINES}</div>
                   </div>
                   <div className="bg-cyan-400/10 rounded-xl p-4 border border-cyan-400/30 text-center">
                     <div className="text-cyan-400 text-sm">Mines</div>
@@ -141,36 +190,36 @@ export default function Mines() {
                   </div>
                   <div className="bg-yellow-400/20 rounded-xl p-4 border border-yellow-400/50 text-center">
                     <div className="text-yellow-400 text-sm">Multiplier</div>
-                    <div className="text-2xl font-bold text-yellow-400">{currentMultiplier.toFixed(2)}x</div>
+                    <div className="text-2xl font-bold text-yellow-400">{state.currentMultiplier.toFixed(2)}x</div>
                   </div>
                 </div>
 
                 {/* Message */}
                 <div className="text-center text-xl font-bold text-cyan-400 mb-4 min-h-8">
-                  {message}
+                  {state.message}
                 </div>
               </div>
 
               {/* Controls */}
               <div className="flex gap-4 justify-center flex-wrap">
-                {!gameStarted ? (
+                {!state.gameStarted ? (
                   <Button
-                    onClick={startGame}
+                    onClick={() => dispatch({ type: "START_GAME" })}
                     className="bg-gradient-to-r from-secondary to-accent text-white hover:opacity-90 font-bold px-12 py-4 text-lg shadow-lg"
                   >
                     START GAME
                   </Button>
                 ) : (
                   <Button
-                    onClick={handleCashOut}
-                    disabled={currentMultiplier === 1}
+                    onClick={() => dispatch({ type: "CASH_OUT" })}
+                    disabled={state.currentMultiplier === 1}
                     className="bg-yellow-500 text-black hover:bg-yellow-600 font-bold px-12 py-4 text-lg disabled:opacity-50"
                   >
-                    CASH OUT ({Math.floor(BET_AMOUNT * currentMultiplier).toLocaleString()})
+                    CASH OUT ({Math.floor(BET_AMOUNT * state.currentMultiplier).toLocaleString()})
                   </Button>
                 )}
                 <Button
-                  onClick={resetGame}
+                  onClick={() => dispatch({ type: "RESET_GAME" })}
                   variant="outline"
                   className="border-white text-white hover:bg-white/10 font-bold px-6 py-3"
                 >
