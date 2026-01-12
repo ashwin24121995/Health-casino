@@ -13,7 +13,7 @@ import Mines from "./pages/games/Mines";
 import Slots from "./pages/games/Slots";
 import Plinko from "./pages/games/Plinko";
 import Diamonds from "./pages/games/Diamonds";
-import DreamCatcher from "./pages/games/DreamCatcher";
+import Roulette from "./pages/games/Roulette";
 
 function Router() {
   return (
@@ -58,8 +58,8 @@ function Router() {
       <Route path={"/game/diamonds"}>
         {() => <Diamonds />}
       </Route>
-      <Route path={"/game/dreamcatcher"}>
-        {() => <DreamCatcher />}
+      <Route path="/game/roulette">
+        {() => <Roulette />}
       </Route>
       <Route path={"/404"}>
         {() => (

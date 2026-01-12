@@ -41,13 +41,13 @@ export default function GamesHub() {
       multiplier: "Up to 5x per match",
     },
     {
-      id: "dreamcatcher",
-      name: "Dream Catcher",
-      emoji: "🌙",
-      description: "Spin the magical wheel and catch your dreams! Each spin has an equal chance to win big!",
-      path: "/game/dreamcatcher",
+      id: "roulette",
+      name: "Roulette",
+      emoji: "🎡",
+      description: "Spin the wheel and bet on numbers, colors, or ranges! Multiple betting options for every strategy.",
+      path: "/game/roulette",
       color: "from-indigo-600 to-cyan-600",
-      multiplier: "Up to 10x",
+      multiplier: "Up to 36x",
     },
   ];
 
