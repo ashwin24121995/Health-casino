@@ -69,11 +69,12 @@ export default function Roulette() {
     const numberIndex = WHEEL_NUMBERS.indexOf(randomNumber);
     const anglePerNumber = 360 / 37;
     
-    const totalSpins = 6 + Math.random() * 2;
+    // Ball spins 8-10 full rotations before landing
+    const totalSpins = 8 + Math.random() * 2;
     const finalAngle = (totalSpins * 360) + (numberIndex * anglePerNumber) + (anglePerNumber / 2);
     
     const startTime = Date.now();
-    const duration = 4000;
+    const duration = 5000; // 5 seconds for realistic spin
     const startAngle = ballAngle;
     const startRadius = 125;
     const endRadius = 110;
@@ -81,7 +82,8 @@ export default function Roulette() {
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const easeOut = 1 - Math.pow(1 - progress, 3);
+      // Easing: starts fast, slows down significantly
+      const easeOut = 1 - Math.pow(1 - progress, 4);
       
       setBallAngle(startAngle + (finalAngle - startAngle) * easeOut);
       setBallRadius(startRadius + (endRadius - startRadius) * easeOut);
@@ -233,7 +235,7 @@ export default function Roulette() {
                   alt="Roulette Wheel"
                   className="w-full h-full object-cover"
                 />
-                {/* Ball - Realistic silver ball */}
+                {/* Ball - Realistic silver ball spinning around wheel */}
                 <div
                   className="absolute w-4 h-4 rounded-full"
                   style={{
@@ -371,21 +373,21 @@ export default function Roulette() {
           </div>
         </div>
 
-        {/* How to Play */}
-        <div className="bg-gray-800 border border-yellow-600 rounded-lg p-4 shadow-xl">
-          <h2 className="text-lg font-bold text-yellow-400 mb-2">📖 HOW TO PLAY</h2>
-          <div className="grid grid-cols-2 gap-4 text-sm">
+        {/* How to Play - Brief Instructions */}
+        <div className="bg-gray-800 border border-yellow-600 rounded-lg p-6 shadow-xl">
+          <h2 className="text-xl font-bold text-yellow-400 mb-4">📖 HOW TO PLAY ROULETTE</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-yellow-300">
-              <h3 className="font-bold text-yellow-400 mb-1">OBJECTIVE</h3>
-              <p>Select a chip value, click numbers to place bets. Ball spins around wheel and lands on a number. Match to win!</p>
+              <h3 className="font-bold text-yellow-400 mb-2">1️⃣ SELECT & BET</h3>
+              <p className="text-sm">Choose a chip value (5K, 10K, 25K, 50K) and click numbers or outside bets to place your wagers.</p>
             </div>
             <div className="text-yellow-300">
-              <h3 className="font-bold text-yellow-400 mb-1">BET TYPES</h3>
-              <ul className="space-y-0.5">
-                <li>• Single Number: 36:1 payout</li>
-                <li>• Color/Odd/Even: 1:1 payout</li>
-                <li>• Ranges (1-18/19-36): 1:1 payout</li>
-              </ul>
+              <h3 className="font-bold text-yellow-400 mb-2">2️⃣ SPIN THE WHEEL</h3>
+              <p className="text-sm">Click SPIN to launch the ball. It will spin around the wheel and land on a random number.</p>
+            </div>
+            <div className="text-yellow-300">
+              <h3 className="font-bold text-yellow-400 mb-2">3️⃣ WIN & COLLECT</h3>
+              <p className="text-sm"><strong>Single Number:</strong> 36:1 | <strong>Color/Odd/Even:</strong> 1:1 | <strong>Range (1-18/19-36):</strong> 1:1</p>
             </div>
           </div>
         </div>
