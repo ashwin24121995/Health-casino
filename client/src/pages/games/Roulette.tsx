@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 interface BetSelection {
-  type: 'number' | 'color' | 'oddeven' | 'range' | 'dozen' | 'column';
+  type: 'number' | 'color' | 'oddeven' | 'range';
   value: string | number;
   amount: number;
 }
 
 const RED_NUMBERS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+const WHEEL_NUMBERS = [0, 26, 3, 35, 12, 28, 7, 29, 18, 22, 9, 31, 14, 20, 1, 33, 16, 24, 5, 10, 23, 8, 30, 11, 36, 13, 27, 6, 34, 17, 25, 2, 21, 4, 19, 15, 32];
 
 export default function Roulette() {
   const [credits, setCredits] = useState(1000000);
@@ -16,9 +17,10 @@ export default function Roulette() {
   const [spinning, setSpinning] = useState(false);
   const [lastNumber, setLastNumber] = useState<number | null>(null);
   const [lastWin, setLastWin] = useState(0);
-  const [wheelRotation, setWheelRotation] = useState(0);
+  const [ballRotation, setBallRotation] = useState(0);
   const [message, setMessage] = useState('');
   const [resultDisplay, setResultDisplay] = useState<string>('');
+  const [glowingNumbers, setGlowingNumbers] = useState<Set<number>>(new Set());
 
   const placeBet = (type: string, value: string | number) => {
     if (credits < betAmount) {
@@ -34,6 +36,14 @@ export default function Roulette() {
 
     setSelectedBets([...selectedBets, newBet]);
     setCredits(credits - betAmount);
+
+    // Add glow to number if it's a number bet
+    if (type === 'number') {
+      const newGlowing = new Set(glowingNumbers);
+      newGlowing.add(value as number);
+      setGlowingNumbers(newGlowing);
+    }
+
     setMessage(`Bet placed: ${betAmount.toLocaleString()} credits`);
     setTimeout(() => setMessage(''), 2000);
   };
@@ -47,10 +57,12 @@ export default function Roulette() {
     setSpinning(true);
     setMessage('Spinning...');
     const randomNumber = Math.floor(Math.random() * 37);
+    
+    // Calculate ball rotation - each number is 9.73 degrees (360/37)
     const spins = 5 + Math.random() * 3;
     const rotation = (randomNumber * 9.73) + (spins * 360);
     
-    setWheelRotation(rotation);
+    setBallRotation(rotation);
 
     setTimeout(() => {
       setLastNumber(randomNumber);
@@ -102,7 +114,7 @@ export default function Roulette() {
     const color = isRed ? 'RED' : (number === 0 ? 'GREEN' : 'BLACK');
     const oddEven = number === 0 ? '' : (isOdd ? 'ODD' : 'EVEN');
     
-    resultText = `${number} ${color}`;
+    resultText = `${color}`;
     if (oddEven) resultText += ` ${oddEven}`;
     if (range) resultText += ` ${range}`;
 
@@ -110,6 +122,7 @@ export default function Roulette() {
     setLastWin(totalWin);
     setCredits(credits + totalWin);
     setSelectedBets([]);
+    setGlowingNumbers(new Set());
 
     if (totalWin > 0) {
       setMessage(`🎉 WIN! +${totalWin.toLocaleString()}`);
@@ -123,15 +136,17 @@ export default function Roulette() {
     setSelectedBets([]);
     setLastNumber(null);
     setLastWin(0);
-    setWheelRotation(0);
+    setBallRotation(0);
     setMessage('');
     setResultDisplay('');
+    setGlowingNumbers(new Set());
   };
 
   const clearBets = () => {
     const returnedCredits = selectedBets.reduce((sum, bet) => sum + bet.amount, 0);
     setCredits(credits + returnedCredits);
     setSelectedBets([]);
+    setGlowingNumbers(new Set());
     setMessage('Bets cleared');
     setTimeout(() => setMessage(''), 2000);
   };
@@ -158,100 +173,22 @@ export default function Roulette() {
           </div>
         )}
 
-        {/* Main Game Area - Wheel Centered */}
-        <div className="mb-8">
-          {/* Wheel Section */}
-          <div className="flex justify-center mb-8">
-            <div className="relative">
-              {/* Outer Golden Frame */}
-              <div className="absolute inset-0 -m-8 rounded-full border-8 border-yellow-500 shadow-2xl" style={{
-                background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), transparent)',
-                boxShadow: '0 0 40px rgba(255,215,0,0.6), inset 0 0 20px rgba(0,0,0,0.4)',
-              }}></div>
-              
-              {/* Wheel Container */}
-              <div className="relative w-96 h-96 rounded-full overflow-hidden shadow-2xl border-8 border-yellow-600" style={{
-                boxShadow: '0 0 60px rgba(255,215,0,0.8), inset 0 0 30px rgba(0,0,0,0.5)',
-              }}>
-                <img
-                  src="/images/roulette-wheel.png"
-                  alt="Roulette Wheel"
-                  className="w-full h-full object-cover"
-                  style={{
-                    transform: `rotate(${wheelRotation}deg)`,
-                    transition: spinning ? 'transform 3s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none',
-                  }}
-                />
-                {/* Pointer */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4 z-10">
-                  <div className="w-0 h-0 border-l-8 border-r-8 border-t-10 border-l-transparent border-r-transparent border-t-yellow-400 drop-shadow-lg"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Result Box - Below Wheel */}
-          <div className="flex justify-center mb-8">
-            <div className="bg-gradient-to-b from-gray-800 to-gray-900 border-4 border-yellow-600 rounded-lg p-8 text-center shadow-2xl w-full max-w-sm">
-              <div className="text-yellow-300 text-xs uppercase tracking-widest font-bold mb-4">Last Result</div>
-              {lastNumber !== null ? (
-                <div>
-                  <div className="text-6xl font-bold text-yellow-400 mb-4">{lastNumber}</div>
-                  <div className="text-2xl font-bold text-yellow-300 tracking-wider">{resultDisplay}</div>
-                </div>
-              ) : (
-                <div className="text-5xl text-gray-500">-</div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Betting Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          {/* Left: Stats */}
-          <div className="lg:col-span-1 space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gray-800 border-2 border-yellow-600 rounded p-4 text-center shadow-lg">
-                <div className="text-yellow-300 text-xs uppercase font-bold">Bets</div>
-                <div className="text-yellow-400 font-bold text-2xl">{selectedBets.length}</div>
-              </div>
-              <div className="bg-gray-800 border-2 border-yellow-600 rounded p-4 text-center shadow-lg">
-                <div className="text-yellow-300 text-xs uppercase font-bold">Bet</div>
-                <div className="text-yellow-400 font-bold text-2xl">{(betAmount / 1000).toFixed(0)}K</div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-b from-gray-800 to-gray-900 border-2 border-yellow-600 rounded p-4 text-center shadow-lg">
-              <div className="text-yellow-300 text-xs uppercase font-bold mb-2">Total Bet</div>
-              <div className="text-3xl font-bold text-yellow-400">
-                {(selectedBets.reduce((sum, b) => sum + b.amount, 0) / 1000).toFixed(0)}K
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-b from-gray-800 to-gray-900 border-2 border-yellow-600 rounded p-4 text-center shadow-lg">
-              <div className="text-yellow-300 text-xs uppercase font-bold mb-2">Last Win</div>
-              <div className="text-3xl font-bold text-yellow-400">
-                {(lastWin / 1000).toFixed(0)}K
-              </div>
-            </div>
-          </div>
-
-          {/* Right: Betting Table */}
-          <div className="lg:col-span-2">
-            {/* Betting Table Background */}
-            <div className="bg-gradient-to-b from-green-700 to-green-800 border-4 border-yellow-600 rounded-lg p-6 shadow-2xl mb-4 relative overflow-hidden">
-              {/* Table Header */}
-              <div className="text-center mb-6 relative z-10">
-                <div className="text-yellow-400 text-2xl font-bold tracking-widest">ROULETTE TABLE</div>
+        {/* Main Game Area */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+          {/* Left: Betting Table */}
+          <div className="lg:col-span-1">
+            <div className="bg-gradient-to-b from-green-700 to-green-800 border-4 border-yellow-600 rounded-lg p-4 shadow-2xl">
+              <div className="text-center mb-4">
+                <div className="text-yellow-400 text-lg font-bold tracking-widest">BETS</div>
               </div>
 
               {/* Number Grid */}
-              <div className="grid grid-cols-13 gap-1 mb-6 bg-green-900 p-4 rounded-lg relative z-10">
+              <div className="grid grid-cols-3 gap-1 mb-4">
                 {/* 0 */}
                 <button
                   onClick={() => placeBet('number', 0)}
                   disabled={spinning}
-                  className="col-span-13 bg-gradient-to-b from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 rounded border-2 border-yellow-500 disabled:opacity-50 shadow-lg hover:shadow-xl transition-all"
+                  className="col-span-3 bg-gradient-to-b from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm"
                 >
                   0
                 </button>
@@ -268,7 +205,7 @@ export default function Roulette() {
                         isRed
                           ? 'bg-gradient-to-b from-red-600 to-red-700 hover:from-red-500 hover:to-red-600'
                           : 'bg-gradient-to-b from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800'
-                      } text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm shadow-md hover:shadow-lg transition-all`}
+                      } text-white font-bold py-1 rounded border-2 border-yellow-500 disabled:opacity-50 text-xs`}
                     >
                       {num}
                     </button>
@@ -277,93 +214,199 @@ export default function Roulette() {
               </div>
 
               {/* Outside Bets */}
-              <div className="grid grid-cols-6 gap-2 relative z-10">
+              <div className="space-y-2">
                 <button
                   onClick={() => placeBet('range', 'low')}
                   disabled={spinning}
-                  className="bg-gradient-to-b from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm shadow-lg hover:shadow-xl transition-all"
+                  className="w-full bg-gradient-to-b from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-xs"
                 >
                   1-18
                 </button>
                 <button
                   onClick={() => placeBet('oddeven', 'even')}
                   disabled={spinning}
-                  className="bg-gradient-to-b from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold py-3 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm shadow-lg hover:shadow-xl transition-all"
+                  className="w-full bg-gradient-to-b from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-xs"
                 >
                   EVEN
                 </button>
                 <button
                   onClick={() => placeBet('color', 'red')}
                   disabled={spinning}
-                  className="bg-gradient-to-b from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold py-3 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm shadow-lg hover:shadow-xl transition-all"
+                  className="w-full bg-gradient-to-b from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-xs"
                 >
                   RED
                 </button>
                 <button
                   onClick={() => placeBet('color', 'black')}
                   disabled={spinning}
-                  className="bg-gradient-to-b from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white font-bold py-3 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm shadow-lg hover:shadow-xl transition-all"
+                  className="w-full bg-gradient-to-b from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-xs"
                 >
                   BLACK
                 </button>
                 <button
                   onClick={() => placeBet('oddeven', 'odd')}
                   disabled={spinning}
-                  className="bg-gradient-to-b from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white font-bold py-3 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm shadow-lg hover:shadow-xl transition-all"
+                  className="w-full bg-gradient-to-b from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-xs"
                 >
                   ODD
                 </button>
                 <button
                   onClick={() => placeBet('range', 'high')}
                   disabled={spinning}
-                  className="bg-gradient-to-b from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-3 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm shadow-lg hover:shadow-xl transition-all"
+                  className="w-full bg-gradient-to-b from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-xs"
                 >
                   19-36
                 </button>
               </div>
             </div>
+          </div>
 
-            {/* Bet Amount Controls */}
-            <div className="grid grid-cols-4 gap-2 mb-4">
-              {[5000, 10000, 25000, 50000].map((amount) => (
-                <Button
-                  key={amount}
-                  onClick={() => setBetAmount(amount)}
-                  className={`py-3 font-bold border-2 rounded transition-all ${
-                    betAmount === amount
-                      ? 'bg-gradient-to-b from-yellow-500 to-yellow-600 border-yellow-300 text-gray-900 shadow-lg'
-                      : 'bg-gradient-to-b from-gray-700 to-gray-800 border-yellow-600 text-yellow-400 hover:from-gray-600 hover:to-gray-700 shadow-md hover:shadow-lg'
-                  }`}
+          {/* Center: Wheel */}
+          <div className="lg:col-span-2 flex flex-col items-center justify-center">
+            {/* Stable Roulette Wheel */}
+            <div className="relative w-80 h-80 mb-6">
+              {/* Outer Golden Frame */}
+              <div className="absolute inset-0 -m-6 rounded-full border-8 border-yellow-500 shadow-2xl" style={{
+                background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), transparent)',
+                boxShadow: '0 0 40px rgba(255,215,0,0.6), inset 0 0 20px rgba(0,0,0,0.4)',
+              }}></div>
+              
+              {/* Wheel Container - STABLE */}
+              <div className="relative w-full h-full rounded-full overflow-hidden shadow-2xl border-8 border-yellow-600" style={{
+                boxShadow: '0 0 60px rgba(255,215,0,0.8), inset 0 0 30px rgba(0,0,0,0.5)',
+              }}>
+                <img
+                  src="/images/roulette-wheel.png"
+                  alt="Roulette Wheel"
+                  className="w-full h-full object-cover"
+                />
+
+                {/* Spinning Ball Animation */}
+                <div
+                  className="absolute w-6 h-6 bg-white rounded-full shadow-lg"
+                  style={{
+                    top: '50%',
+                    left: '50%',
+                    transform: `translate(-50%, -50%) rotate(${ballRotation}deg) translateX(155px)`,
+                    transition: spinning ? 'transform 3s cubic-bezier(0.25, 0.46, 0.45, 0.94)' : 'none',
+                  }}
                 >
-                  {(amount / 1000).toFixed(0)}K
-                </Button>
-              ))}
+                  <div className="w-full h-full rounded-full bg-white border-2 border-yellow-400 shadow-lg"></div>
+                </div>
+
+                {/* Pointer */}
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-4 z-10">
+                  <div className="w-0 h-0 border-l-8 border-r-8 border-t-10 border-l-transparent border-r-transparent border-t-yellow-400 drop-shadow-lg"></div>
+                </div>
+
+                {/* Glow Overlay for Bet Numbers */}
+                <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
+                  {WHEEL_NUMBERS.map((num, idx) => {
+                    if (!glowingNumbers.has(num)) return null;
+                    const angle = (idx * 360) / 37;
+                    const rad = (angle * Math.PI) / 180;
+                    const cx = 50 + 40 * Math.cos(rad - Math.PI / 2);
+                    const cy = 50 + 40 * Math.sin(rad - Math.PI / 2);
+                    return (
+                      <circle
+                        key={num}
+                        cx={`${cx}%`}
+                        cy={`${cy}%`}
+                        r="8%"
+                        fill="none"
+                        stroke="rgba(0, 255, 255, 0.8)"
+                        strokeWidth="2"
+                        style={{
+                          filter: 'drop-shadow(0 0 8px rgba(0, 255, 255, 0.8))',
+                        }}
+                      />
+                    );
+                  })}
+                </svg>
+              </div>
+            </div>
+
+            {/* Spin Button */}
+            <Button
+              onClick={spin}
+              disabled={spinning || selectedBets.length === 0}
+              className="bg-gradient-to-b from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white font-bold py-4 px-12 text-xl border-2 border-yellow-500 disabled:opacity-50 shadow-lg hover:shadow-xl transition-all mb-4"
+            >
+              {spinning ? 'SPINNING...' : 'SPIN'}
+            </Button>
+          </div>
+
+          {/* Right: Result & Stats */}
+          <div className="lg:col-span-1 space-y-4">
+            {/* Result Box */}
+            <div className="bg-gradient-to-b from-gray-800 to-gray-900 border-4 border-yellow-600 rounded-lg p-6 text-center shadow-2xl">
+              <div className="text-yellow-300 text-xs uppercase tracking-widest font-bold mb-4">Result</div>
+              {lastNumber !== null ? (
+                <div>
+                  <div className="text-6xl font-bold text-yellow-400 mb-4">{lastNumber}</div>
+                  <div className="text-xl font-bold text-yellow-300 tracking-wider mb-4">{resultDisplay}</div>
+                  <div className="text-sm text-yellow-300">YOU WON</div>
+                  <div className="text-3xl font-bold text-yellow-400">${(lastWin / 1000).toFixed(1)}K</div>
+                </div>
+              ) : (
+                <div className="text-5xl text-gray-500">-</div>
+              )}
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="bg-gray-800 border-2 border-yellow-600 rounded p-3 text-center shadow-lg">
+                <div className="text-yellow-300 text-xs uppercase font-bold">Bets</div>
+                <div className="text-yellow-400 font-bold text-lg">{selectedBets.length}</div>
+              </div>
+              <div className="bg-gray-800 border-2 border-yellow-600 rounded p-3 text-center shadow-lg">
+                <div className="text-yellow-300 text-xs uppercase font-bold">Bet</div>
+                <div className="text-yellow-400 font-bold text-lg">{(betAmount / 1000).toFixed(0)}K</div>
+              </div>
+            </div>
+
+            {/* Total Bet */}
+            <div className="bg-gradient-to-b from-gray-800 to-gray-900 border-2 border-yellow-600 rounded p-4 text-center shadow-lg">
+              <div className="text-yellow-300 text-xs uppercase font-bold mb-2">Total Bet</div>
+              <div className="text-2xl font-bold text-yellow-400">
+                {(selectedBets.reduce((sum, b) => sum + b.amount, 0) / 1000).toFixed(0)}K
+              </div>
             </div>
 
             {/* Controls */}
-            <div className="grid grid-cols-3 gap-3">
-              <Button
-                onClick={spin}
-                disabled={spinning || selectedBets.length === 0}
-                className="bg-gradient-to-b from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white font-bold py-4 text-lg border-2 border-yellow-500 disabled:opacity-50 shadow-lg hover:shadow-xl transition-all"
-              >
-                {spinning ? 'SPINNING...' : 'SPIN'}
-              </Button>
+            <div className="space-y-2">
               <Button
                 onClick={clearBets}
                 disabled={spinning}
-                className="bg-gradient-to-b from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold py-4 text-lg border-2 border-yellow-500 disabled:opacity-50 shadow-lg hover:shadow-xl transition-all"
+                className="w-full bg-gradient-to-b from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold py-2 border-2 border-yellow-500 disabled:opacity-50"
               >
                 CLEAR
               </Button>
               <Button
                 onClick={reset}
-                className="bg-gradient-to-b from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white font-bold py-4 text-lg border-2 border-yellow-500 shadow-lg hover:shadow-xl transition-all"
+                className="w-full bg-gradient-to-b from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white font-bold py-2 border-2 border-yellow-500"
               >
                 RESET
               </Button>
             </div>
           </div>
+        </div>
+
+        {/* Bet Amount Controls */}
+        <div className="grid grid-cols-4 gap-2 mb-6">
+          {[5000, 10000, 25000, 50000].map((amount) => (
+            <Button
+              key={amount}
+              onClick={() => setBetAmount(amount)}
+              className={`py-3 font-bold border-2 rounded transition-all ${
+                betAmount === amount
+                  ? 'bg-gradient-to-b from-yellow-500 to-yellow-600 border-yellow-300 text-gray-900 shadow-lg'
+                  : 'bg-gradient-to-b from-gray-700 to-gray-800 border-yellow-600 text-yellow-400 hover:from-gray-600 hover:to-gray-700 shadow-md hover:shadow-lg'
+              }`}
+            >
+              {(amount / 1000).toFixed(0)}K
+            </Button>
+          ))}
         </div>
 
         {/* How to Play */}
@@ -372,7 +415,7 @@ export default function Roulette() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="text-yellow-300">
               <h3 className="font-bold text-yellow-400 mb-2">OBJECTIVE</h3>
-              <p className="text-sm">Place bets on numbers or outside bets. Spin the wheel and match the winning number to win!</p>
+              <p className="text-sm">Place bets on numbers or outside bets. The ball spins around the wheel. Match the winning number to win!</p>
             </div>
             <div className="text-yellow-300">
               <h3 className="font-bold text-yellow-400 mb-2">BET TYPES</h3>
@@ -388,7 +431,7 @@ export default function Roulette() {
             </div>
             <div className="text-yellow-300">
               <h3 className="font-bold text-yellow-400 mb-2">RULES</h3>
-              <p className="text-sm">Place multiple bets before spinning. Wheel determines winner. Payouts automatic.</p>
+              <p className="text-sm">Place multiple bets before spinning. Ball determines winner. Payouts automatic.</p>
             </div>
           </div>
         </div>
