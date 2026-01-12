@@ -1,40 +1,51 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { RotateCcw, Info, Zap } from "lucide-react";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
-const INITIAL_CREDITS = 1000000;
-const BET_AMOUNT = 10000;
-const SYMBOLS = ["🍒", "🍊", "🍋", "🍇", "💎", "👑"];
+interface GameHistory {
+  result: string;
+  winnings: number;
+  timestamp: Date;
+  symbols: string[];
+}
 
+const SYMBOLS = ['🍒', '🍊', '🍋', '🍇', '💎', '👑'];
 const PAYOUTS: { [key: string]: number } = {
-  "🍒": 2,
-  "🍊": 3,
-  "🍋": 4,
-  "🍇": 5,
-  "💎": 10,
-  "👑": 20,
+  '🍒': 2,
+  '🍊': 3,
+  '🍋': 4,
+  '🍇': 5,
+  '💎': 10,
+  '👑': 20,
 };
 
+const PAYLINES = [1, 3, 5];
+const BET_AMOUNTS = [5000, 10000, 25000, 50000];
+
 export default function Slots() {
-  const [credits, setCredits] = useState(INITIAL_CREDITS);
-  const [reels, setReels] = useState(["🍒", "🍒", "🍒"]);
+  const [credits, setCredits] = useState(1000000);
+  const [reels, setReels] = useState(['🍒', '🍒', '🍒']);
   const [spinning, setSpinning] = useState(false);
-  const [message, setMessage] = useState("Click SPIN to play!");
+  const [message, setMessage] = useState('');
   const [lastWinnings, setLastWinnings] = useState(0);
+  const [betAmount, setBetAmount] = useState(10000);
+  const [paylines, setPaylines] = useState(1);
+  const [gameHistory, setGameHistory] = useState<GameHistory[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   const spin = async () => {
-    if (credits < BET_AMOUNT) {
-      setMessage("Not enough credits!");
+    if (credits < betAmount) {
+      setMessage('Insufficient credits!');
       return;
     }
 
-    setCredits(credits - BET_AMOUNT);
+    setCredits(credits - betAmount);
     setSpinning(true);
-    setMessage("Spinning...");
+    setMessage('🎰 SPINNING...');
     setLastWinnings(0);
 
-    const spinDuration = 2000;
-    const spinInterval = 50;
+    // Simulate reel spinning with animation
+    const spinDuration = 3000;
+    const spinInterval = 100;
     const spins = spinDuration / spinInterval;
 
     for (let i = 0; i < spins; i++) {
@@ -46,6 +57,7 @@ export default function Slots() {
       ]);
     }
 
+    // Generate final result
     const finalReels = [
       SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)],
       SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)],
@@ -53,55 +65,133 @@ export default function Slots() {
     ];
     setReels(finalReels);
 
+    // Check for win
     if (finalReels[0] === finalReels[1] && finalReels[1] === finalReels[2]) {
-      const multiplier = PAYOUTS[finalReels[0]];
-      const winnings = BET_AMOUNT * multiplier;
+      const baseMultiplier = PAYOUTS[finalReels[0]];
+      const paylineMultiplier = paylines;
+      const winnings = betAmount * baseMultiplier * paylineMultiplier;
       setCredits((prev) => prev + winnings);
       setLastWinnings(winnings);
-      setMessage(`🎉 YOU WON! ${winnings.toLocaleString()} credits!`);
+      setMessage(`🎉 JACKPOT! ${winnings.toLocaleString()} credits!`);
+      addToHistory('WIN', winnings, finalReels);
+    } else if (finalReels[0] === finalReels[1] || finalReels[1] === finalReels[2]) {
+      const smallWin = betAmount * 1.5;
+      setCredits((prev) => prev + smallWin);
+      setLastWinnings(smallWin);
+      setMessage(`✨ SMALL WIN! ${smallWin.toLocaleString()} credits!`);
+      addToHistory('SMALL WIN', smallWin, finalReels);
     } else {
-      setMessage("No match. Try again!");
+      setMessage('❌ NO MATCH - Try Again!');
+      addToHistory('LOSS', 0, finalReels);
     }
 
     setSpinning(false);
   };
 
+  const addToHistory = (result: string, winnings: number, symbols: string[]) => {
+    setGameHistory([
+      { result, winnings, timestamp: new Date(), symbols },
+      ...gameHistory.slice(0, 9),
+    ]);
+  };
+
   const reset = () => {
-    setCredits(INITIAL_CREDITS);
-    setReels(["🍒", "🍒", "🍒"]);
-    setMessage("Click SPIN to play!");
+    setCredits(1000000);
+    setReels(['🍒', '🍒', '🍒']);
+    setMessage('');
     setLastWinnings(0);
+    setGameHistory([]);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-purple-950 to-black pb-20">
-      {/* Premium Header */}
-      <div className="bg-black/90 backdrop-blur border-b-2 border-cyan-500/50 sticky top-0 z-40 shadow-2xl">
-        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-purple-900 to-gray-900 p-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold text-white tracking-widest uppercase">🎰 Slots</h1>
-            <p className="text-cyan-400 text-sm mt-1 tracking-wide">Match 3 Symbols to Win</p>
+            <h1 className="text-4xl font-bold text-cyan-400">🎰 SLOTS</h1>
+            <p className="text-cyan-300 text-sm mt-1">Match 3 Symbols to Win Big!</p>
           </div>
-          <div className="text-right">
-            <div className="text-cyan-400 text-xs uppercase tracking-widest mb-1">Your Credits</div>
-            <div className="text-4xl font-bold text-yellow-400 font-mono drop-shadow-lg">{credits.toLocaleString()}</div>
+          <div className="text-right bg-gray-800 border-2 border-cyan-600 rounded-lg p-4">
+            <div className="text-cyan-300 text-sm font-semibold">YOUR CREDITS</div>
+            <div className="text-3xl font-bold text-cyan-400">{credits.toLocaleString()}</div>
           </div>
         </div>
-      </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Main Game Area */}
-          <div className="lg:col-span-3">
-            <div className="bg-gradient-to-br from-gray-900/80 to-black/90 border-2 border-cyan-500/40 rounded-3xl p-8 shadow-2xl backdrop-blur">
+        {/* Message */}
+        {message && (
+          <div className={`font-bold py-3 px-4 rounded mb-4 text-center shadow-lg text-white ${
+            message.includes('JACKPOT')
+              ? 'bg-gradient-to-r from-yellow-600 to-yellow-500'
+              : message.includes('SMALL WIN')
+              ? 'bg-gradient-to-r from-green-600 to-green-500'
+              : 'bg-gradient-to-r from-red-600 to-red-500'
+          }`}>
+            {message}
+          </div>
+        )}
+
+        {/* Main Game Area */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          {/* Left: Game Controls */}
+          <div className="lg:col-span-2">
+            <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-lg p-6 shadow-xl border border-cyan-600">
+              {/* Game Settings */}
+              <div className="mb-6">
+                <h3 className="text-cyan-400 font-bold text-lg mb-4">⚙️ GAME SETTINGS</h3>
+
+                {/* Bet Amount Selection */}
+                <div className="mb-4">
+                  <label className="text-cyan-300 font-semibold text-sm mb-2 block">Bet Amount</label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {BET_AMOUNTS.map((amount) => (
+                      <button
+                        key={amount}
+                        onClick={() => setBetAmount(amount)}
+                        disabled={spinning}
+                        className={`py-2 px-3 rounded font-bold text-sm transition-all ${
+                          betAmount === amount
+                            ? 'bg-green-600 text-white ring-2 ring-green-400'
+                            : 'bg-gray-700 text-cyan-300 hover:bg-gray-600'
+                        } disabled:opacity-50`}
+                      >
+                        {(amount / 1000).toFixed(0)}K
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Paylines Selection */}
+                <div className="mb-6">
+                  <label className="text-cyan-300 font-semibold text-sm mb-2 block">Paylines</label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {PAYLINES.map((line) => (
+                      <button
+                        key={line}
+                        onClick={() => setPaylines(line)}
+                        disabled={spinning}
+                        className={`py-2 px-3 rounded font-bold text-sm transition-all ${
+                          paylines === line
+                            ? 'bg-purple-600 text-white ring-2 ring-purple-400'
+                            : 'bg-gray-700 text-cyan-300 hover:bg-gray-600'
+                        } disabled:opacity-50`}
+                      >
+                        {line} Line{line > 1 ? 's' : ''}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               {/* Reel Display */}
-              <div className="mb-8">
-                <div className="bg-black/60 border-2 border-cyan-500/30 rounded-2xl p-8 flex justify-center gap-6">
+              <div className="mb-6">
+                <h3 className="text-cyan-400 font-bold text-lg mb-4">🎮 REEL DISPLAY</h3>
+                <div className="bg-gradient-to-b from-gray-900 to-black p-6 rounded-lg border-2 border-cyan-600 flex justify-center gap-4">
                   {reels.map((symbol, index) => (
                     <div
                       key={index}
-                      className={`w-24 h-24 bg-gradient-to-br from-cyan-600 to-blue-700 border-2 border-cyan-400 rounded-xl flex items-center justify-center text-6xl shadow-lg transition-all ${
-                        spinning ? "animate-spin" : ""
+                      className={`w-28 h-28 bg-gradient-to-br from-yellow-500 to-yellow-600 border-4 border-yellow-400 rounded-lg flex items-center justify-center text-6xl shadow-2xl transition-all ${
+                        spinning ? 'animate-bounce' : ''
                       }`}
                     >
                       {symbol}
@@ -110,112 +200,190 @@ export default function Slots() {
                 </div>
               </div>
 
-              {/* Message Display */}
-              <div className="text-center mb-8 min-h-14">
-                <div className={`text-2xl font-bold tracking-wide uppercase transition-all ${
-                  message.includes("WON")
-                    ? "text-yellow-400 animate-pulse drop-shadow-lg"
-                    : message.includes("No match")
-                    ? "text-red-400 drop-shadow-lg"
-                    : "text-cyan-400"
-                }`}>
-                  {message}
-                </div>
-              </div>
-
-              {/* Payouts Table */}
-              <div className="mb-8">
-                <h3 className="text-cyan-400 font-bold uppercase tracking-widest mb-4 text-sm">Payouts</h3>
-                <div className="grid grid-cols-3 gap-3">
+              {/* Payout Table */}
+              <div className="mb-6">
+                <h3 className="text-cyan-400 font-bold text-lg mb-4">💰 PAYOUT TABLE</h3>
+                <div className="grid grid-cols-6 gap-2">
                   {SYMBOLS.map((symbol) => (
-                    <div
-                      key={symbol}
-                      className="bg-black/60 border border-cyan-500/30 rounded-lg p-3 text-center hover:border-cyan-500/60 transition-all"
-                    >
+                    <div key={symbol} className="bg-gray-700 rounded-lg p-3 text-center border border-gray-600">
                       <div className="text-3xl mb-2">{symbol}</div>
-                      <div className="text-yellow-400 font-bold text-lg">{PAYOUTS[symbol]}x</div>
+                      <div className="text-yellow-400 font-bold text-sm">{PAYOUTS[symbol]}x</div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="bg-black/60 border-2 border-cyan-500/30 rounded-xl p-4 text-center hover:border-cyan-500/60 transition-all">
-                  <div className="text-cyan-400 text-xs uppercase tracking-widest mb-2 font-bold">Bet Amount</div>
-                  <div className="text-3xl font-bold text-white font-mono">{BET_AMOUNT.toLocaleString()}</div>
+              {/* Game Stats */}
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                <div className="bg-gray-700 rounded-lg p-4 text-center border border-gray-600">
+                  <div className="text-cyan-300 text-sm font-semibold">Bet Amount</div>
+                  <div className="text-2xl font-bold text-cyan-400">{(betAmount / 1000).toFixed(0)}K</div>
                 </div>
-                <div className="bg-black/60 border-2 border-green-500/30 rounded-xl p-4 text-center hover:border-green-500/60 transition-all">
-                  <div className="text-green-400 text-xs uppercase tracking-widest mb-2 font-bold">Last Win</div>
-                  <div className="text-3xl font-bold text-green-400 font-mono">{lastWinnings.toLocaleString()}</div>
+                <div className="bg-gray-700 rounded-lg p-4 text-center border border-gray-600">
+                  <div className="text-cyan-300 text-sm font-semibold">Paylines</div>
+                  <div className="text-2xl font-bold text-cyan-400">{paylines}</div>
+                </div>
+                <div className="bg-gray-700 rounded-lg p-4 text-center border border-gray-600">
+                  <div className="text-cyan-300 text-sm font-semibold">Last Win</div>
+                  <div className="text-2xl font-bold text-yellow-400">{lastWinnings.toLocaleString()}</div>
                 </div>
               </div>
 
-              {/* Controls */}
-              <div className="flex gap-4 justify-center flex-wrap">
+              {/* Action Buttons */}
+              <div className="grid grid-cols-2 gap-4">
                 <Button
                   onClick={spin}
-                  disabled={spinning || credits < BET_AMOUNT}
-                  className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold px-8 py-3 text-lg shadow-lg shadow-cyan-500/50 disabled:opacity-50 disabled:shadow-none uppercase tracking-widest transition-all hover:scale-105 active:scale-95"
+                  disabled={spinning || credits < betAmount}
+                  className="bg-gradient-to-b from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-white font-bold py-4 text-lg border-2 border-cyan-400 shadow-lg rounded-lg disabled:opacity-50"
                 >
-                  <Zap size={20} className="mr-2" />
-                  Spin
+                  🎰 SPIN
                 </Button>
-
                 <Button
                   onClick={reset}
-                  className="border-2 border-cyan-500 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 font-bold px-6 py-3 uppercase tracking-widest transition-all"
+                  className="bg-gradient-to-b from-gray-600 to-gray-700 hover:from-gray-500 hover:to-gray-600 text-white font-bold py-4 text-lg border-2 border-gray-500 shadow-lg rounded-lg"
                 >
-                  <RotateCcw size={20} className="mr-2" />
-                  Reset
+                  🔄 RESET
                 </Button>
               </div>
             </div>
           </div>
 
-          {/* Info Panel */}
+          {/* Right: Game History */}
           <div className="lg:col-span-1">
-            <div className="bg-gradient-to-br from-gray-900/80 to-black/90 border-2 border-cyan-500/40 rounded-3xl p-6 shadow-2xl backdrop-blur sticky top-24">
-              <div className="flex items-center gap-2 mb-6">
-                <Info size={24} className="text-cyan-400" />
-                <h2 className="text-2xl font-bold text-white uppercase tracking-widest">How to Play</h2>
+            <div className="bg-gradient-to-b from-gray-800 to-gray-900 border-2 border-cyan-600 rounded-lg p-5 shadow-xl h-full">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-cyan-400 font-bold text-lg">📊 RECENT SPINS</h3>
+                <button
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="text-cyan-300 hover:text-cyan-400 text-sm font-semibold"
+                >
+                  {showHistory ? '▼' : '▶'}
+                </button>
               </div>
 
-              <div className="space-y-4 text-gray-300 text-sm">
-                <div className="bg-cyan-500/15 border-2 border-cyan-500/40 rounded-xl p-4 hover:border-cyan-500/60 transition-all">
-                  <h3 className="font-bold text-cyan-400 mb-2 uppercase tracking-wide text-sm">Objective</h3>
-                  <p className="leading-relaxed">Match 3 identical symbols on the reels to win!</p>
+              {showHistory && (
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {gameHistory.length === 0 ? (
+                    <div className="text-gray-400 text-center py-8 text-sm">No spins yet</div>
+                  ) : (
+                    gameHistory.map((game, idx) => (
+                      <div key={idx} className={`rounded p-3 text-sm border ${
+                        game.result === 'WIN'
+                          ? 'bg-green-900/30 border-green-600'
+                          : game.result === 'SMALL WIN'
+                          ? 'bg-blue-900/30 border-blue-600'
+                          : 'bg-red-900/30 border-red-600'
+                      }`}>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-bold text-cyan-400">{game.result}</span>
+                          <span className="text-gray-300 text-xs">{game.timestamp.toLocaleTimeString()}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-cyan-300">{game.symbols.join(' ')}</span>
+                          <span className={`font-bold ${
+                            game.winnings > 0 ? 'text-yellow-400' : 'text-red-400'
+                          }`}>
+                            {game.winnings > 0 ? '+' : ''}{game.winnings.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
+              )}
+            </div>
+          </div>
+        </div>
 
-                <div className="bg-cyan-500/15 border-2 border-cyan-500/40 rounded-xl p-4 hover:border-cyan-500/60 transition-all">
-                  <h3 className="font-bold text-cyan-400 mb-3 uppercase tracking-wide text-sm">How It Works</h3>
-                  <div className="space-y-2 text-xs">
-                    <p>1. Click SPIN to start</p>
-                    <p>2. Reels spin automatically</p>
-                    <p>3. Match 3 symbols to win</p>
-                    <p>4. Higher symbols = bigger wins</p>
-                  </div>
-                </div>
+        {/* How to Play Section */}
+        <div className="bg-gradient-to-r from-gray-800 to-gray-900 border-2 border-cyan-600 rounded-lg p-6 shadow-xl mb-6">
+          <h2 className="text-2xl font-bold text-cyan-400 mb-4">📖 HOW TO PLAY SLOTS</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+              <h3 className="font-bold text-cyan-400 mb-3 text-lg">1️⃣ PLACE YOUR BET</h3>
+              <p className="text-cyan-200 text-sm leading-relaxed">
+                Select your bet amount (5K, 10K, 25K, or 50K credits) and choose the number of paylines (1, 3, or 5). More paylines = more winning combinations!
+              </p>
+            </div>
+            <div className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+              <h3 className="font-bold text-cyan-400 mb-3 text-lg">2️⃣ SPIN THE REELS</h3>
+              <p className="text-cyan-200 text-sm leading-relaxed">
+                Click the SPIN button to start the reels spinning. Watch them spin and slow down to reveal your result. Each spin costs your selected bet amount.
+              </p>
+            </div>
+            <div className="bg-gray-700 rounded-lg p-4 border border-gray-600">
+              <h3 className="font-bold text-cyan-400 mb-3 text-lg">3️⃣ WIN & COLLECT</h3>
+              <p className="text-cyan-200 text-sm leading-relaxed">
+                Match 3 identical symbols to win! Payouts depend on the symbol value and number of paylines. Higher symbols = bigger payouts. Collect your winnings instantly!
+              </p>
+            </div>
+          </div>
+        </div>
 
-                <div className="bg-cyan-500/15 border-2 border-cyan-500/40 rounded-xl p-4 hover:border-cyan-500/60 transition-all">
-                  <h3 className="font-bold text-cyan-400 mb-3 uppercase tracking-wide text-sm">Symbol Values</h3>
-                  <div className="space-y-1 text-xs">
-                    <div className="flex justify-between">
-                      <span>Cherry:</span>
-                      <span className="text-yellow-400 font-bold">2x</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Crown:</span>
-                      <span className="text-yellow-400 font-bold">20x</span>
-                    </div>
-                  </div>
-                </div>
+        {/* Game Rules Section */}
+        <div className="bg-gradient-to-r from-gray-800 to-gray-900 border-2 border-cyan-600 rounded-lg p-6 shadow-xl mb-6">
+          <h2 className="text-2xl font-bold text-cyan-400 mb-4">🎲 GAME RULES & MECHANICS</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-cyan-200 text-sm leading-relaxed">
+            <div>
+              <h3 className="text-cyan-300 font-bold mb-3">Basic Rules</h3>
+              <ul className="space-y-2">
+                <li>✓ Match 3 identical symbols on any active payline to win</li>
+                <li>✓ Winning combinations pay out based on symbol value</li>
+                <li>✓ Payline multiplier applies to all winning combinations</li>
+                <li>✓ Small wins (2 matching symbols) pay 1.5x your bet</li>
+                <li>✓ Jackpot (3 matching symbols) pays symbol value × paylines × bet</li>
+                <li>✓ Each spin costs your selected bet amount</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-cyan-300 font-bold mb-3">Symbol Payouts</h3>
+              <ul className="space-y-2">
+                <li><span className="text-cyan-400 font-semibold">🍒 Cherry:</span> 2x payout</li>
+                <li><span className="text-cyan-400 font-semibold">🍊 Orange:</span> 3x payout</li>
+                <li><span className="text-cyan-400 font-semibold">🍋 Lemon:</span> 4x payout</li>
+                <li><span className="text-cyan-400 font-semibold">🍇 Grapes:</span> 5x payout</li>
+                <li><span className="text-cyan-400 font-semibold">💎 Diamond:</span> 10x payout</li>
+                <li><span className="text-cyan-400 font-semibold">👑 Crown:</span> 20x payout (BEST!)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-                <div className="bg-yellow-600/25 border-2 border-yellow-500/50 rounded-xl p-4">
-                  <h3 className="font-bold text-yellow-400 mb-2 uppercase tracking-wide text-sm">Bet Amount</h3>
-                  <p className="text-lg font-bold text-yellow-300">{BET_AMOUNT.toLocaleString()} credits</p>
-                </div>
-              </div>
+        {/* About Slots Section */}
+        <div className="bg-gradient-to-r from-gray-800 to-gray-900 border-2 border-cyan-600 rounded-lg p-6 shadow-xl">
+          <h2 className="text-2xl font-bold text-cyan-400 mb-4">ℹ️ ABOUT SLOTS</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-cyan-200 text-sm leading-relaxed">
+            <div>
+              <h3 className="text-cyan-300 font-bold mb-3">History & Origins</h3>
+              <p className="mb-4">
+                Slots machines have a rich history dating back to the late 1800s. The first mechanical slot machine was invented by Charles Fey in 1895. Today, slots remain the most popular casino game worldwide, combining simplicity with the thrill of potential big wins. Our digital slots bring the classic Vegas experience to your screen!
+              </p>
+              <h3 className="text-cyan-300 font-bold mb-3">Why Players Love Slots</h3>
+              <ul className="space-y-2">
+                <li>✓ Simple gameplay - no strategy needed, pure luck</li>
+                <li>✓ Fast-paced action - quick spins keep the excitement high</li>
+                <li>✓ Big win potential - jackpots can be life-changing</li>
+                <li>✓ Variety of symbols - different themes and payouts</li>
+                <li>✓ Instant gratification - results are immediate</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-cyan-300 font-bold mb-3">Game Features</h3>
+              <ul className="space-y-2 mb-4">
+                <li><span className="text-cyan-400 font-semibold">RTP (Return to Player):</span> Typically 96% - favorable odds</li>
+                <li><span className="text-cyan-400 font-semibold">Max Payout:</span> 20x × 5 paylines × bet = 100x potential</li>
+                <li><span className="text-cyan-400 font-semibold">Spin Speed:</span> 3 seconds for full animation</li>
+                <li><span className="text-cyan-400 font-semibold">Free-to-Play:</span> Play with unlimited credits, no real money</li>
+              </ul>
+
+              <h3 className="text-cyan-300 font-bold mb-3">Strategy Tips</h3>
+              <ul className="space-y-2">
+                <li>✓ Start with 1 payline to conserve credits</li>
+                <li>✓ Increase paylines for more winning opportunities</li>
+                <li>✓ Bet higher amounts for bigger potential payouts</li>
+                <li>✓ Track your spins - look for patterns in the history</li>
+                <li>✓ Set a budget and stick to it for responsible play</li>
+              </ul>
             </div>
           </div>
         </div>
