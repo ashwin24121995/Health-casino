@@ -1,275 +1,394 @@
-import { useReducer } from "react";
-import { Button } from "@/components/ui/button";
-import { RotateCcw, Info, Zap } from "lucide-react";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
-const INITIAL_CREDITS = 1000000;
-const BET_AMOUNT = 10000;
-
-interface GameState {
-  credits: number;
-  spinning: boolean;
-  selectedBet: string | null;
-  winningNumber: number | null;
-  lastWinnings: number;
-  message: string;
-  wheelRotation: number;
+interface BetSelection {
+  type: 'number' | 'color' | 'oddeven' | 'range' | 'dozen' | 'column';
+  value: string | number;
+  amount: number;
 }
 
-type GameAction =
-  | { type: "SELECT_BET"; bet: string }
-  | { type: "SPIN" }
-  | { type: "SPIN_COMPLETE"; number: number; winnings: number }
-  | { type: "RESET" };
-
-const initialState: GameState = {
-  credits: INITIAL_CREDITS,
-  spinning: false,
-  selectedBet: null,
-  winningNumber: null,
-  lastWinnings: 0,
-  message: "Select a bet and SPIN to play!",
-  wheelRotation: 0,
-};
-
-function gameReducer(state: GameState, action: GameAction): GameState {
-  switch (action.type) {
-    case "SELECT_BET":
-      return {
-        ...state,
-        selectedBet: action.bet,
-        message: `Bet selected: ${action.bet}. Click SPIN to play!`,
-      };
-
-    case "SPIN":
-      if (state.credits < BET_AMOUNT || !state.selectedBet) {
-        return {
-          ...state,
-          message: state.credits < BET_AMOUNT ? "Not enough credits!" : "Select a bet first!",
-        };
-      }
-
-      return {
-        ...state,
-        spinning: true,
-        credits: state.credits - BET_AMOUNT,
-        message: "Spinning...",
-        wheelRotation: state.wheelRotation + 3600 + Math.random() * 360,
-      };
-
-    case "SPIN_COMPLETE":
-      return {
-        ...state,
-        spinning: false,
-        winningNumber: action.number,
-        lastWinnings: action.winnings,
-        credits: state.credits + action.winnings,
-        message: action.winnings > 0 ? `🎉 YOU WON! ${action.winnings.toLocaleString()} credits!` : "No match. Try again!",
-      };
-
-    case "RESET":
-      return initialState;
-
-    default:
-      return state;
-  }
-}
+const RED_NUMBERS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
 
 export default function Roulette() {
-  const [state, dispatch] = useReducer(gameReducer, initialState);
+  const [credits, setCredits] = useState(1000000);
+  const [betAmount, setBetAmount] = useState(10000);
+  const [selectedBets, setSelectedBets] = useState<BetSelection[]>([]);
+  const [spinning, setSpinning] = useState(false);
+  const [lastNumber, setLastNumber] = useState<number | null>(null);
+  const [lastWin, setLastWin] = useState(0);
+  const [wheelRotation, setWheelRotation] = useState(0);
+  const [message, setMessage] = useState('');
+  const [resultDisplay, setResultDisplay] = useState<string>('');
 
-  const handleSpin = async () => {
-    if (state.spinning || !state.selectedBet) return;
-
-    dispatch({ type: "SPIN" });
-
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const winningNumber = Math.floor(Math.random() * 37);
-    let winnings = 0;
-
-    if (state.selectedBet === "red") {
-      const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
-      winnings = redNumbers.includes(winningNumber) ? BET_AMOUNT * 2 : 0;
-    } else if (state.selectedBet === "black") {
-      const blackNumbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35];
-      winnings = blackNumbers.includes(winningNumber) ? BET_AMOUNT * 2 : 0;
-    } else if (state.selectedBet === "odd") {
-      winnings = winningNumber % 2 === 1 ? BET_AMOUNT * 2 : 0;
-    } else if (state.selectedBet === "even") {
-      winnings = winningNumber % 2 === 0 && winningNumber !== 0 ? BET_AMOUNT * 2 : 0;
-    } else if (state.selectedBet === "low") {
-      winnings = winningNumber > 0 && winningNumber <= 18 ? BET_AMOUNT * 2 : 0;
-    } else if (state.selectedBet === "high") {
-      winnings = winningNumber >= 19 ? BET_AMOUNT * 2 : 0;
-    } else if (state.selectedBet.startsWith("dozen")) {
-      const dozen = parseInt(state.selectedBet.split("-")[1]);
-      const start = (dozen - 1) * 12 + 1;
-      const end = dozen * 12;
-      winnings = winningNumber >= start && winningNumber <= end ? BET_AMOUNT * 3 : 0;
-    } else if (state.selectedBet.startsWith("single-")) {
-      const number = parseInt(state.selectedBet.split("-")[1]);
-      winnings = winningNumber === number ? BET_AMOUNT * 36 : 0;
+  const placeBet = (type: string, value: string | number) => {
+    if (credits < betAmount) {
+      setMessage('Insufficient credits!');
+      return;
     }
 
-    dispatch({ type: "SPIN_COMPLETE", number: winningNumber, winnings });
+    const newBet: BetSelection = {
+      type: type as any,
+      value,
+      amount: betAmount,
+    };
+
+    setSelectedBets([...selectedBets, newBet]);
+    setCredits(credits - betAmount);
+    setMessage(`Bet placed: ${betAmount.toLocaleString()} credits`);
+    setTimeout(() => setMessage(''), 2000);
+  };
+
+  const spin = () => {
+    if (selectedBets.length === 0) {
+      setMessage('Place a bet first!');
+      return;
+    }
+
+    setSpinning(true);
+    setMessage('Spinning...');
+    const randomNumber = Math.floor(Math.random() * 37);
+    const spins = 5 + Math.random() * 3;
+    const rotation = (randomNumber * 9.73) + (spins * 360);
+    
+    setWheelRotation(rotation);
+
+    setTimeout(() => {
+      setLastNumber(randomNumber);
+      calculateWinnings(randomNumber);
+      setSpinning(false);
+    }, 3000);
+  };
+
+  const calculateWinnings = (number: number) => {
+    let totalWin = 0;
+    let resultText = '';
+
+    selectedBets.forEach((bet) => {
+      let won = false;
+      let multiplier = 0;
+
+      if (bet.type === 'number' && bet.value === number) {
+        won = true;
+        multiplier = 36;
+      } else if (bet.type === 'color') {
+        const isRed = RED_NUMBERS.includes(number);
+        if ((bet.value === 'red' && isRed) || (bet.value === 'black' && !isRed)) {
+          won = true;
+          multiplier = 1;
+        }
+      } else if (bet.type === 'oddeven') {
+        const isOdd = number % 2 === 1;
+        if ((bet.value === 'odd' && isOdd) || (bet.value === 'even' && !isOdd)) {
+          won = true;
+          multiplier = 1;
+        }
+      } else if (bet.type === 'range') {
+        if ((bet.value === 'low' && number >= 1 && number <= 18) ||
+            (bet.value === 'high' && number >= 19 && number <= 36)) {
+          won = true;
+          multiplier = 1;
+        }
+      } else if (bet.type === 'dozen') {
+        const dozen = Math.floor((number - 1) / 12) + 1;
+        if (bet.value === `dozen${dozen}` && number !== 0) {
+          won = true;
+          multiplier = 2;
+        }
+      } else if (bet.type === 'column') {
+        const column = ((number - 1) % 3) + 1;
+        if (bet.value === `col${column}` && number !== 0) {
+          won = true;
+          multiplier = 2;
+        }
+      }
+
+      if (won) {
+        totalWin += bet.amount * (multiplier + 1);
+      }
+    });
+
+    // Build result text
+    const isRed = RED_NUMBERS.includes(number);
+    const isOdd = number % 2 === 1;
+    const range = number === 0 ? '' : (number >= 1 && number <= 18 ? 'LOW' : 'HIGH');
+    const color = isRed ? 'RED' : (number === 0 ? 'GREEN' : 'BLACK');
+    const oddEven = number === 0 ? '' : (isOdd ? 'ODD' : 'EVEN');
+    
+    resultText = `${number} ${color}`;
+    if (oddEven) resultText += ` ${oddEven}`;
+    if (range) resultText += ` ${range}`;
+
+    setResultDisplay(resultText);
+    setLastWin(totalWin);
+    setCredits(credits + totalWin);
+    setSelectedBets([]);
+
+    if (totalWin > 0) {
+      setMessage(`🎉 WIN! +${totalWin.toLocaleString()}`);
+    } else {
+      setMessage('💣 NO WIN');
+    }
+  };
+
+  const reset = () => {
+    setCredits(1000000);
+    setSelectedBets([]);
+    setLastNumber(null);
+    setLastWin(0);
+    setWheelRotation(0);
+    setMessage('');
+    setResultDisplay('');
+  };
+
+  const clearBets = () => {
+    const returnedCredits = selectedBets.reduce((sum, bet) => sum + bet.amount, 0);
+    setCredits(credits + returnedCredits);
+    setSelectedBets([]);
+    setMessage('Bets cleared');
+    setTimeout(() => setMessage(''), 2000);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-purple-950 to-black pb-20">
-      {/* Premium Header */}
-      <div className="bg-black/90 backdrop-blur border-b-2 border-cyan-500/50 sticky top-0 z-40 shadow-2xl">
-        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-green-900 to-gray-900 p-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6 px-4">
           <div>
-            <h1 className="text-4xl font-bold text-white tracking-widest uppercase">🎡 Roulette</h1>
-            <p className="text-cyan-400 text-sm mt-1 tracking-wide">Spin the Wheel and Win Big</p>
+            <h1 className="text-4xl font-bold text-yellow-400">🎡 ROULETTE</h1>
+            <p className="text-yellow-300 text-sm">Spin the Wheel and Win Big</p>
           </div>
           <div className="text-right">
-            <div className="text-cyan-400 text-xs uppercase tracking-widest mb-1">Your Credits</div>
-            <div className="text-4xl font-bold text-yellow-400 font-mono drop-shadow-lg">{state.credits.toLocaleString()}</div>
+            <div className="text-yellow-300 text-sm">YOUR CREDITS</div>
+            <div className="text-3xl font-bold text-yellow-400">{credits.toLocaleString()}</div>
           </div>
         </div>
-      </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Main Game Area */}
-          <div className="lg:col-span-3">
-            <div className="bg-gradient-to-br from-gray-900/80 to-black/90 border-2 border-cyan-500/40 rounded-3xl p-8 shadow-2xl backdrop-blur">
-              {/* Wheel Display */}
-              <div className="mb-8 flex justify-center">
-                <div className="relative w-64 h-64">
-                  <div
-                    className={`absolute inset-0 rounded-full bg-gradient-to-br from-cyan-600 to-blue-700 border-4 border-cyan-400 flex items-center justify-center text-6xl font-bold text-white shadow-2xl transition-transform ${
-                      state.spinning ? "animate-spin" : ""
-                    }`}
-                    style={{
-                      transform: `rotate(${state.wheelRotation}deg)`,
-                      transitionDuration: state.spinning ? "3s" : "0s",
-                    }}
-                  >
-                    {state.winningNumber !== null ? state.winningNumber : "?"}
+        {/* Main Game Area */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          {/* Left: Wheel */}
+          <div className="lg:col-span-1 flex flex-col items-center">
+            {/* Realistic Roulette Wheel */}
+            <div className="relative w-64 h-64 mb-4">
+              {/* Outer ring */}
+              <div className="absolute inset-0 rounded-full border-8 border-yellow-600 shadow-2xl" style={{
+                background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent)',
+              }}>
+                {/* Wheel */}
+                <div
+                  className="w-full h-full rounded-full flex items-center justify-center transition-transform duration-3000"
+                  style={{
+                    transform: `rotate(${wheelRotation}deg)`,
+                    background: 'conic-gradient(from 0deg, #000 0deg 9.73deg, #c41e3a 9.73deg 19.46deg, #000 19.46deg 29.19deg, #c41e3a 29.19deg 38.92deg, #000 38.92deg 48.65deg, #c41e3a 48.65deg 58.38deg, #000 58.38deg 68.11deg, #c41e3a 68.11deg 77.84deg, #000 77.84deg 87.57deg, #c41e3a 87.57deg 97.3deg, #000 97.3deg 107.03deg, #c41e3a 107.03deg 116.76deg, #000 116.76deg 126.49deg, #c41e3a 126.49deg 136.22deg, #000 136.22deg 145.95deg, #c41e3a 145.95deg 155.68deg, #000 155.68deg 165.41deg, #c41e3a 165.41deg 175.14deg, #000 175.14deg 184.87deg, #c41e3a 184.87deg 194.6deg, #000 194.6deg 204.33deg, #c41e3a 204.33deg 214.06deg, #000 214.06deg 223.79deg, #c41e3a 223.79deg 233.52deg, #000 233.52deg 243.25deg, #c41e3a 243.25deg 252.98deg, #000 252.98deg 262.71deg, #c41e3a 262.71deg 272.44deg, #000 272.44deg 282.17deg, #c41e3a 282.17deg 291.9deg, #000 291.9deg 301.63deg, #c41e3a 301.63deg 311.36deg, #000 311.36deg 321.09deg, #c41e3a 321.09deg 330.82deg, #000 330.82deg 340.55deg, #c41e3a 340.55deg 350.28deg, #22c55e 350.28deg 360deg)',
+                  }}
+                >
+                  {/* Center */}
+                  <div className="w-16 h-16 rounded-full bg-gray-800 border-4 border-yellow-600 flex items-center justify-center">
+                    <div className="w-2 h-2 rounded-full bg-yellow-400"></div>
                   </div>
                 </div>
               </div>
 
-              {/* Message Display */}
-              <div className="text-center mb-8 min-h-14">
-                <div className={`text-2xl font-bold tracking-wide uppercase transition-all ${
-                  state.message.includes("WON")
-                    ? "text-yellow-400 animate-pulse drop-shadow-lg"
-                    : state.message.includes("No match")
-                    ? "text-red-400 drop-shadow-lg"
-                    : "text-cyan-400"
-                }`}>
-                  {state.message}
-                </div>
+              {/* Pointer */}
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-3 z-10">
+                <div className="w-0 h-0 border-l-4 border-r-4 border-t-6 border-l-transparent border-r-transparent border-t-yellow-400"></div>
               </div>
+            </div>
 
-              {/* Betting Options */}
-              <div className="mb-8">
-                <h3 className="text-cyan-400 font-bold uppercase tracking-widest mb-4 text-sm">Select Your Bet</h3>
-                <div className="grid grid-cols-3 gap-3">
-                  {[
-                    { label: "Red", value: "red", payout: "1:1" },
-                    { label: "Black", value: "black", payout: "1:1" },
-                    { label: "Odd", value: "odd", payout: "1:1" },
-                    { label: "Even", value: "even", payout: "1:1" },
-                    { label: "Low (1-18)", value: "low", payout: "1:1" },
-                    { label: "High (19-36)", value: "high", payout: "1:1" },
-                  ].map((bet) => (
-                    <button
-                      key={bet.value}
-                      onClick={() => dispatch({ type: "SELECT_BET", bet: bet.value })}
-                      disabled={state.spinning}
-                      className={`p-3 rounded-lg font-bold text-sm uppercase tracking-wide transition-all transform hover:scale-105 ${
-                        state.selectedBet === bet.value
-                          ? "bg-gradient-to-br from-yellow-500 to-orange-600 text-white border-2 border-yellow-400 shadow-lg shadow-yellow-500/50"
-                          : "bg-gradient-to-br from-cyan-600 to-blue-700 text-white border-2 border-cyan-400 hover:border-cyan-300 hover:shadow-lg hover:shadow-cyan-500/50"
-                      } ${state.spinning && "opacity-50"}`}
-                    >
-                      {bet.label}
-                      <div className="text-xs mt-1">{bet.payout}</div>
-                    </button>
-                  ))}
+            {/* Result Box */}
+            <div className="w-full bg-gradient-to-b from-gray-800 to-gray-900 border-2 border-yellow-600 rounded-lg p-4 text-center mb-4 shadow-lg">
+              <div className="text-yellow-300 text-xs uppercase tracking-wider mb-2">Last Result</div>
+              {lastNumber !== null ? (
+                <div>
+                  <div className="text-4xl font-bold text-yellow-400 mb-2">{lastNumber}</div>
+                  <div className="text-sm text-yellow-300">{resultDisplay}</div>
                 </div>
-              </div>
+              ) : (
+                <div className="text-2xl text-gray-400">-</div>
+              )}
+            </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-4 mb-8">
-                <div className="bg-black/60 border-2 border-cyan-500/30 rounded-xl p-4 text-center hover:border-cyan-500/60 transition-all">
-                  <div className="text-cyan-400 text-xs uppercase tracking-widest mb-2 font-bold">Bet Amount</div>
-                  <div className="text-3xl font-bold text-white font-mono">{BET_AMOUNT.toLocaleString()}</div>
-                </div>
-                <div className="bg-black/60 border-2 border-cyan-500/30 rounded-xl p-4 text-center hover:border-cyan-500/60 transition-all">
-                  <div className="text-cyan-400 text-xs uppercase tracking-widest mb-2 font-bold">Last Number</div>
-                  <div className="text-3xl font-bold text-white font-mono">{state.winningNumber ?? "-"}</div>
-                </div>
-                <div className="bg-black/60 border-2 border-green-500/30 rounded-xl p-4 text-center hover:border-green-500/60 transition-all">
-                  <div className="text-green-400 text-xs uppercase tracking-widest mb-2 font-bold">Last Win</div>
-                  <div className="text-3xl font-bold text-green-400 font-mono">{state.lastWinnings.toLocaleString()}</div>
-                </div>
-              </div>
-
-              {/* Controls */}
-              <div className="flex gap-4 justify-center flex-wrap">
-                <Button
-                  onClick={handleSpin}
-                  disabled={state.spinning || !state.selectedBet}
-                  className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold px-8 py-3 text-lg shadow-lg shadow-cyan-500/50 disabled:opacity-50 disabled:shadow-none uppercase tracking-widest transition-all hover:scale-105 active:scale-95"
-                >
-                  <Zap size={20} className="mr-2" />
-                  Spin
-                </Button>
-
-                <Button
-                  onClick={() => dispatch({ type: "RESET" })}
-                  className="border-2 border-cyan-500 text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400 font-bold px-6 py-3 uppercase tracking-widest transition-all"
-                >
-                  <RotateCcw size={20} className="mr-2" />
-                  Reset
-                </Button>
-              </div>
+            {/* Bet Info */}
+            <div className="w-full bg-gray-800 border border-yellow-600 rounded p-3 text-center text-sm">
+              <div className="text-yellow-300">Bet: {betAmount.toLocaleString()}</div>
+              <div className="text-green-400">Bets: {selectedBets.length}</div>
             </div>
           </div>
 
-          {/* Info Panel */}
-          <div className="lg:col-span-1">
-            <div className="bg-gradient-to-br from-gray-900/80 to-black/90 border-2 border-cyan-500/40 rounded-3xl p-6 shadow-2xl backdrop-blur sticky top-24">
-              <div className="flex items-center gap-2 mb-6">
-                <Info size={24} className="text-cyan-400" />
-                <h2 className="text-2xl font-bold text-white uppercase tracking-widest">How to Play</h2>
+          {/* Right: Betting Table */}
+          <div className="lg:col-span-2">
+            {/* Message */}
+            {message && (
+              <div className="bg-gradient-to-r from-yellow-600 to-yellow-500 text-gray-900 font-bold py-2 px-4 rounded mb-4 text-center">
+                {message}
+              </div>
+            )}
+
+            {/* Roulette Table */}
+            <div className="bg-gradient-to-b from-green-700 to-green-800 border-4 border-yellow-600 rounded-lg p-6 shadow-2xl mb-4">
+              {/* Table Header */}
+              <div className="text-center mb-4">
+                <div className="text-yellow-400 text-2xl font-bold tracking-wider">ROULETTE TABLE</div>
               </div>
 
-              <div className="space-y-4 text-gray-300 text-sm">
-                <div className="bg-cyan-500/15 border-2 border-cyan-500/40 rounded-xl p-4 hover:border-cyan-500/60 transition-all">
-                  <h3 className="font-bold text-cyan-400 mb-2 uppercase tracking-wide text-sm">Objective</h3>
-                  <p className="leading-relaxed">Select a bet type, spin the wheel, and match the winning number!</p>
-                </div>
+              {/* Number Grid */}
+              <div className="grid grid-cols-13 gap-1 mb-6 bg-green-900 p-3 rounded">
+                {/* 0 */}
+                <button
+                  onClick={() => placeBet('number', 0)}
+                  disabled={spinning}
+                  className="col-span-13 bg-gradient-to-b from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50"
+                >
+                  0
+                </button>
 
-                <div className="bg-cyan-500/15 border-2 border-cyan-500/40 rounded-xl p-4 hover:border-cyan-500/60 transition-all">
-                  <h3 className="font-bold text-cyan-400 mb-3 uppercase tracking-wide text-sm">Bet Types</h3>
-                  <div className="space-y-1 text-xs">
-                    <div className="flex justify-between">
-                      <span>Colors/Ranges:</span>
-                      <span className="text-yellow-400 font-bold">1:1 (2x)</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Single Number:</span>
-                      <span className="text-yellow-400 font-bold">36:1 (37x)</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-cyan-500/15 border-2 border-cyan-500/40 rounded-xl p-4 hover:border-cyan-500/60 transition-all">
-                  <h3 className="font-bold text-cyan-400 mb-2 uppercase tracking-wide text-sm">Strategy</h3>
-                  <p className="leading-relaxed text-xs">Color bets are safer but lower payout. Single numbers are risky but pay up to 36x!</p>
-                </div>
-
-                <div className="bg-yellow-600/25 border-2 border-yellow-500/50 rounded-xl p-4">
-                  <h3 className="font-bold text-yellow-400 mb-2 uppercase tracking-wide text-sm">Bet Amount</h3>
-                  <p className="text-lg font-bold text-yellow-300">{BET_AMOUNT.toLocaleString()} credits</p>
-                </div>
+                {/* Numbers 1-36 */}
+                {Array.from({ length: 36 }, (_, i) => i + 1).map((num) => {
+                  const isRed = RED_NUMBERS.includes(num);
+                  return (
+                    <button
+                      key={num}
+                      onClick={() => placeBet('number', num)}
+                      disabled={spinning}
+                      className={`${
+                        isRed
+                          ? 'bg-gradient-to-b from-red-600 to-red-700 hover:from-red-500 hover:to-red-600'
+                          : 'bg-gradient-to-b from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800'
+                      } text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm`}
+                    >
+                      {num}
+                    </button>
+                  );
+                })}
               </div>
+
+              {/* Outside Bets */}
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                <button
+                  onClick={() => placeBet('range', 'low')}
+                  disabled={spinning}
+                  className="bg-gradient-to-b from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm"
+                >
+                  1-18
+                </button>
+                <button
+                  onClick={() => placeBet('oddeven', 'even')}
+                  disabled={spinning}
+                  className="bg-gradient-to-b from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm"
+                >
+                  EVEN
+                </button>
+                <button
+                  onClick={() => placeBet('color', 'red')}
+                  disabled={spinning}
+                  className="bg-gradient-to-b from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm"
+                >
+                  RED
+                </button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => placeBet('range', 'high')}
+                  disabled={spinning}
+                  className="bg-gradient-to-b from-green-600 to-green-700 hover:from-green-500 hover:to-green-600 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm"
+                >
+                  19-36
+                </button>
+                <button
+                  onClick={() => placeBet('oddeven', 'odd')}
+                  disabled={spinning}
+                  className="bg-gradient-to-b from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm"
+                >
+                  ODD
+                </button>
+                <button
+                  onClick={() => placeBet('color', 'black')}
+                  disabled={spinning}
+                  className="bg-gradient-to-b from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 text-white font-bold py-2 rounded border-2 border-yellow-500 disabled:opacity-50 text-sm"
+                >
+                  BLACK
+                </button>
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+              <Button
+                onClick={spin}
+                disabled={spinning || selectedBets.length === 0}
+                className="bg-gradient-to-b from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white font-bold py-3 text-lg border-2 border-yellow-500 disabled:opacity-50"
+              >
+                {spinning ? 'SPINNING...' : 'SPIN'}
+              </Button>
+              <Button
+                onClick={clearBets}
+                disabled={spinning}
+                className="bg-gradient-to-b from-orange-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold py-3 text-lg border-2 border-yellow-500 disabled:opacity-50"
+              >
+                CLEAR
+              </Button>
+              <Button
+                onClick={reset}
+                className="bg-gradient-to-b from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white font-bold py-3 text-lg border-2 border-yellow-500"
+              >
+                RESET
+              </Button>
+              <div className="bg-gray-800 border-2 border-yellow-600 rounded p-2 text-center">
+                <div className="text-yellow-300 text-xs">WIN</div>
+                <div className="text-yellow-400 font-bold">{lastWin.toLocaleString()}</div>
+              </div>
+            </div>
+
+            {/* Bet Amount Controls */}
+            <div className="grid grid-cols-4 gap-2 mb-4">
+              {[5000, 10000, 25000, 50000].map((amount) => (
+                <Button
+                  key={amount}
+                  onClick={() => setBetAmount(amount)}
+                  className={`py-2 font-bold border-2 ${
+                    betAmount === amount
+                      ? 'bg-gradient-to-b from-yellow-500 to-yellow-600 border-yellow-300 text-gray-900'
+                      : 'bg-gradient-to-b from-gray-700 to-gray-800 border-yellow-600 text-yellow-400 hover:from-gray-600 hover:to-gray-700'
+                  }`}
+                >
+                  {(amount / 1000).toFixed(0)}K
+                </Button>
+              ))}
+            </div>
+
+            {/* Total Bet Display */}
+            <div className="bg-gray-800 border-2 border-yellow-600 rounded p-3 text-center">
+              <div className="text-yellow-300 text-sm">TOTAL BET</div>
+              <div className="text-2xl font-bold text-yellow-400">
+                {(selectedBets.reduce((sum, b) => sum + b.amount, 0)).toLocaleString()}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* How to Play */}
+        <div className="bg-gradient-to-b from-gray-800 to-gray-900 border-2 border-yellow-600 rounded-lg p-6">
+          <h2 className="text-2xl font-bold text-yellow-400 mb-4">📖 HOW TO PLAY</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="text-yellow-300">
+              <h3 className="font-bold text-yellow-400 mb-2">OBJECTIVE</h3>
+              <p className="text-sm">Place bets on numbers or outside bets. Spin the wheel and match the winning number to win!</p>
+            </div>
+            <div className="text-yellow-300">
+              <h3 className="font-bold text-yellow-400 mb-2">BET TYPES</h3>
+              <ul className="text-sm space-y-1">
+                <li>• Single Number: 36:1 payout</li>
+                <li>• Color/Odd/Even: 1:1 payout</li>
+                <li>• Ranges (1-18/19-36): 1:1 payout</li>
+              </ul>
+            </div>
+            <div className="text-yellow-300">
+              <h3 className="font-bold text-yellow-400 mb-2">STRATEGY</h3>
+              <p className="text-sm">Mix high-risk single numbers with safer outside bets for balanced gameplay.</p>
+            </div>
+            <div className="text-yellow-300">
+              <h3 className="font-bold text-yellow-400 mb-2">RULES</h3>
+              <p className="text-sm">Place multiple bets before spinning. Wheel determines winner. Payouts automatic.</p>
             </div>
           </div>
         </div>
