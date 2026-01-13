@@ -11,42 +11,32 @@ export default function Header() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/">
-            <a className="flex items-center gap-3 no-underline">
-              <img src="/images/health-mitan-logo.png" alt="Health Mitan" className="h-10 w-10" />
-              <div className="text-xl font-bold text-white font-poppins">
-                HEALTH MITAN
-              </div>
-            </a>
+          <Link href="/" className="flex items-center gap-3 no-underline">
+            <img src="/images/health-mitan-logo.png" alt="Health Mitan" className="h-10 w-10" />
+            <div className="text-xl font-bold text-white font-poppins">
+              HEALTH MITAN
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="/">
-              <a className="text-white hover:text-accent transition-colors font-medium">
-                Home
-              </a>
+            <Link href="/" className="text-white hover:text-accent transition-colors font-medium">
+              Home
             </Link>
-            <Link href="/games">
-              <a className="text-white hover:text-accent transition-colors font-medium">
-                Games
-              </a>
+            <Link href="/games" className="text-white hover:text-accent transition-colors font-medium">
+              Games
             </Link>
 
-            <Link href="/about">
-              <a className="text-white hover:text-accent transition-colors font-medium">
-                About
-              </a>
+            <Link href="/about" className="text-white hover:text-accent transition-colors font-medium">
+              About
             </Link>
           </nav>
 
           {/* CTA Button */}
-          <Link href="/games">
-            <a className="hidden md:inline-block no-underline">
-              <Button className="bg-accent text-primary hover:bg-accent/90 font-bold px-6 py-2 text-lg">
-                PLAY NOW
-              </Button>
-            </a>
+          <Link href="/games" className="hidden md:inline-block no-underline">
+            <Button className="bg-accent text-primary hover:bg-accent/90 font-bold px-6 py-2 text-lg">
+              PLAY NOW
+            </Button>
           </Link>
 
           {/* Mobile Menu Button */}
@@ -61,37 +51,20 @@ export default function Header() {
         {/* Mobile Navigation */}
         {isOpen && (
           <nav className="md:hidden mt-4 pb-4 flex flex-col gap-4">
-            <Link href="/">
-              <a
-                className="text-white hover:text-accent transition-colors font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                Home
-              </a>
+            <Link href="/" className="text-white hover:text-accent transition-colors font-medium" onClick={() => setIsOpen(false)}>
+              Home
             </Link>
-            <Link href="/games">
-              <a
-                className="text-white hover:text-accent transition-colors font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                Games
-              </a>
+            <Link href="/games" className="text-white hover:text-accent transition-colors font-medium" onClick={() => setIsOpen(false)}>
+              Games
             </Link>
 
-            <Link href="/about">
-              <a
-                className="text-white hover:text-accent transition-colors font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                About
-              </a>
+            <Link href="/about" className="text-white hover:text-accent transition-colors font-medium" onClick={() => setIsOpen(false)}>
+              About
             </Link>
-            <Link href="/games">
-              <a className="no-underline" onClick={() => setIsOpen(false)}>
-                <Button className="w-full bg-accent text-primary hover:bg-accent/90 font-bold py-2 text-lg">
-                  PLAY NOW
-                </Button>
-              </a>
+            <Link href="/games" className="no-underline" onClick={() => setIsOpen(false)}>
+              <Button className="w-full bg-accent text-primary hover:bg-accent/90 font-bold py-2 text-lg">
+                PLAY NOW
+              </Button>
             </Link>
           </nav>
         )}
