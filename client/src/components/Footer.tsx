@@ -90,7 +90,7 @@ export default function Footer() {
           </div>
 
           {/* Social Media */}
-          <div>
+          <div style={{display: 'none'}}>
             <h4 className="font-bold text-lg mb-4">Follow Us</h4>
             <div className="flex gap-4">
               <a
