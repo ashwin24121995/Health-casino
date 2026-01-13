@@ -15,7 +15,7 @@ export default function Header() {
             <a className="flex items-center gap-3 no-underline">
               <img src="/images/health-mitan-logo.png" alt="Health Mitan" className="h-10 w-10" />
               <div className="text-xl font-bold text-white font-poppins">
-                LUCKY LOTUS
+                HEALTH MITAN
               </div>
             </a>
           </Link>

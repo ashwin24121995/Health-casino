@@ -7,9 +7,9 @@ export default function About() {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary via-purple-900 to-secondary py-20 text-white">
         <div className="container mx-auto px-4">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">About Lucky Lotus</h1>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">About Health Mitan</h1>
           <p className="text-xl text-gray-200 max-w-2xl">
-            Discover the story behind the world's most exciting social casino platform.
+            Discover the story behind a premium social casino gaming platform dedicated to entertainment and fun.
           </p>
         </div>
       </section>
@@ -21,19 +21,19 @@ export default function About() {
             <div>
               <h2 className="text-4xl font-bold mb-6 text-foreground">Our Story</h2>
               <p className="text-lg text-muted-foreground mb-4">
-                Lucky Lotus was founded with a simple mission: to bring the excitement and thrill of casino gaming to everyone, completely free and safe.
+                Health Mitan was founded with a mission to create a safe, entertaining, and responsible gaming platform where players can enjoy premium social casino games completely free.
               </p>
               <p className="text-lg text-muted-foreground mb-4">
-                We believe that entertainment should be accessible to all. Our platform combines cutting-edge gaming technology with a vibrant community, creating an unmatched social casino experience.
+                We believe that entertainment should be accessible to all. Our platform combines engaging games with a focus on player safety and responsible gaming practices.
               </p>
               <p className="text-lg text-muted-foreground">
-                With over 170 unique games and a community of millions of players worldwide, Lucky Lotus continues to innovate and deliver unforgettable gaming moments every single day.
+                Today, Health Mitan continues to innovate and deliver exceptional gaming experiences with a commitment to integrity, fairness, and community.
               </p>
             </div>
             <div>
               <img
                 src="/images/lucky-mascot-character.png"
-                alt="Lucky Lotus Character"
+                alt="Health Mitan Character"
                 className="rounded-xl shadow-2xl max-w-full h-auto"
               />
             </div>
@@ -50,7 +50,7 @@ export default function About() {
             <div className="bg-background rounded-xl p-8 shadow-lg">
               <h3 className="text-2xl font-bold mb-4 text-foreground">Our Mission</h3>
               <p className="text-muted-foreground">
-                To provide the world's most entertaining, safe, and inclusive social casino experience that brings joy and community to millions of players.
+                To provide the world's most entertaining, safe, and responsible social gaming experience that brings joy and community to our players.
               </p>
             </div>
 
@@ -60,7 +60,7 @@ export default function About() {
               <ul className="space-y-2 text-muted-foreground">
                 <li>✓ Integrity & Fairness</li>
                 <li>✓ Player Safety</li>
-                <li>✓ Innovation</li>
+                <li>✓ Responsible Gaming</li>
                 <li>✓ Community First</li>
               </ul>
             </div>
@@ -69,34 +69,34 @@ export default function About() {
             <div className="bg-background rounded-xl p-8 shadow-lg">
               <h3 className="text-2xl font-bold mb-4 text-foreground">Our Vision</h3>
               <p className="text-muted-foreground">
-                To become the most loved and trusted social casino platform globally, where every player feels valued and celebrated.
+                To become the most trusted social gaming platform, where every player enjoys safe, fair, and entertaining experiences.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Why Players Love Us */}
+      {/* Why Choose Us */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-foreground">Why Players Love Us</h2>
+          <h2 className="text-4xl font-bold text-center mb-12 text-foreground">Why Choose Health Mitan?</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="flex gap-4">
               <div className="text-4xl text-secondary">🎮</div>
               <div>
-                <h3 className="text-xl font-bold mb-2 text-foreground">170+ Unique Games</h3>
+                <h3 className="text-xl font-bold mb-2 text-foreground">Engaging Games</h3>
                 <p className="text-muted-foreground">
-                  From classic slots to modern adventures, we have something for everyone.
+                  Enjoy a variety of exciting games with stunning graphics and engaging gameplay, all completely free.
                 </p>
               </div>
             </div>
 
             <div className="flex gap-4">
-              <div className="text-4xl text-accent">👥</div>
+              <div className="text-4xl text-accent">🛡️</div>
               <div>
-                <h3 className="text-xl font-bold mb-2 text-foreground">Thriving Community</h3>
+                <h3 className="text-xl font-bold mb-2 text-foreground">Safe & Secure</h3>
                 <p className="text-muted-foreground">
-                  Connect with 700K+ players and join an active, supportive community.
+                  Play with peace of mind on our secure platform with no real money involved and responsible gaming practices.
                 </p>
               </div>
             </div>
@@ -104,46 +104,21 @@ export default function About() {
             <div className="flex gap-4">
               <div className="text-4xl text-secondary">🎁</div>
               <div>
-                <h3 className="text-xl font-bold mb-2 text-foreground">Generous Rewards</h3>
+                <h3 className="text-xl font-bold mb-2 text-foreground">Rewards & Bonuses</h3>
                 <p className="text-muted-foreground">
-                  Daily bonuses, free spins, and exclusive rewards await you every day.
+                  Enjoy daily bonuses, rewards, and exclusive perks as you play and progress through our platform.
                 </p>
               </div>
             </div>
 
             <div className="flex gap-4">
-              <div className="text-4xl text-accent">🔒</div>
+              <div className="text-4xl text-accent">👥</div>
               <div>
-                <h3 className="text-xl font-bold mb-2 text-foreground">Safe & Secure</h3>
+                <h3 className="text-xl font-bold mb-2 text-foreground">Community</h3>
                 <p className="text-muted-foreground">
-                  Play with peace of mind on our secure, fair, and transparent platform.
+                  Connect with players worldwide and be part of a vibrant, supportive gaming community.
                 </p>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 bg-gradient-to-r from-primary via-purple-900 to-secondary text-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12">By The Numbers</h2>
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-5xl font-bold mb-2">170+</div>
-              <p className="text-lg text-gray-200">Unique Games</p>
-            </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">700K+</div>
-              <p className="text-lg text-gray-200">Active Players</p>
-            </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">50M+</div>
-              <p className="text-lg text-gray-200">Daily Spins</p>
-            </div>
-            <div>
-              <div className="text-5xl font-bold mb-2">24/7</div>
-              <p className="text-lg text-gray-200">Customer Support</p>
             </div>
           </div>
         </div>
@@ -156,10 +131,10 @@ export default function About() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h3 className="text-2xl font-bold mb-4 text-card-foreground">Health Mitan Private Limited</h3>
-              <p className="text-muted-foreground mb-4">
-                Lucky Lotus is operated by Health Mitan Private Limited, a registered company committed to providing safe, entertaining, and responsible gaming experiences.
+              <p className="text-muted-foreground mb-6">
+                Health Mitan Private Limited is a registered company committed to providing safe, entertaining, and responsible gaming experiences. We operate with transparency, integrity, and a focus on player satisfaction.
               </p>
-              <div className="bg-background rounded-lg p-6 space-y-2">
+              <div className="bg-background rounded-lg p-6 space-y-3">
                 <p className="text-muted-foreground"><strong>Legal Name:</strong> Health Mitan Private Limited</p>
                 <p className="text-muted-foreground"><strong>CIN:</strong> U86909CT2023PTC014998</p>
                 <p className="text-muted-foreground"><strong>PAN:</strong> AWRPH8122K</p>
@@ -179,6 +154,38 @@ export default function About() {
         </div>
       </section>
 
+      {/* Responsible Gaming */}
+      <section className="py-20 bg-gradient-to-r from-primary via-purple-900 to-secondary text-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center mb-12">Responsible Gaming Commitment</h2>
+          <div className="max-w-3xl mx-auto">
+            <p className="text-lg mb-6 text-gray-200">
+              At Health Mitan, we are deeply committed to promoting responsible gaming. Our platform is designed for entertainment purposes only, with no real money involved.
+            </p>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-white/10 rounded-lg p-6">
+                <h3 className="text-xl font-bold mb-4">For Players</h3>
+                <ul className="space-y-2 text-gray-200">
+                  <li>✓ Set time limits for gaming</li>
+                  <li>✓ Take regular breaks</li>
+                  <li>✓ Play for fun, not profit</li>
+                  <li>✓ Never share your account</li>
+                </ul>
+              </div>
+              <div className="bg-white/10 rounded-lg p-6">
+                <h3 className="text-xl font-bold mb-4">Our Commitment</h3>
+                <ul className="space-y-2 text-gray-200">
+                  <li>✓ Free-to-play model only</li>
+                  <li>✓ No real money transactions</li>
+                  <li>✓ 18+ age requirement</li>
+                  <li>✓ Support for problem gaming</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 text-center">
@@ -186,7 +193,7 @@ export default function About() {
             Join Our Community Today
           </h2>
           <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Experience the magic of Lucky Lotus and become part of our amazing gaming community.
+            Experience premium social casino gaming with Health Mitan. Safe, entertaining, and completely free!
           </p>
           <Link href="/games">
             <a className="no-underline">

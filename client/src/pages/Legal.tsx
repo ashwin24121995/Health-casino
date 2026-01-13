@@ -43,7 +43,7 @@ export default function Legal() {
             <div>
               <h2 className="text-2xl font-bold text-card-foreground mb-4">Social Casino Gaming Disclaimer</h2>
               <p className="text-muted-foreground mb-4">
-                Lucky Lotus is a SOCIAL CASINO platform designed for entertainment purposes only. This platform does NOT offer real money gambling and does NOT provide an opportunity to win real money or real prizes.
+                Health Mitan is a SOCIAL CASINO platform designed for entertainment purposes only. This platform does NOT offer real money gambling and does NOT provide an opportunity to win real money or real prizes.
               </p>
               <p className="text-muted-foreground">
                 All gameplay is conducted using virtual coins and credits that have no real-world monetary value. Users play for entertainment and enjoyment only.
@@ -70,7 +70,7 @@ export default function Legal() {
             <div>
               <h2 className="text-2xl font-bold text-card-foreground mb-4">Intellectual Property Rights</h2>
               <p className="text-muted-foreground mb-4">
-                All content on Lucky Lotus, including but not limited to text, graphics, logos, images, audio clips, digital downloads, data compilations, and software, is the property of Health Mitan Private Limited or its content suppliers and is protected by international copyright laws.
+                All content on Health Mitan, including but not limited to text, graphics, logos, images, audio clips, digital downloads, data compilations, and software, is the property of Health Mitan Private Limited or its content suppliers and is protected by international copyright laws.
               </p>
               <p className="text-muted-foreground">
                 Reproduction, redistribution, transmission, or publication of any content without prior written permission is strictly prohibited.
@@ -116,7 +116,7 @@ export default function Legal() {
             <div className="border-t border-border pt-6">
               <p className="text-sm text-muted-foreground">
                 Last Updated: January 2026<br />
-                By using Lucky Lotus, you acknowledge that you have read and understood this Legal Information and agree to its terms.
+                By using Health Mitan, you acknowledge that you have read and understood this Legal Information and agree to its terms.
               </p>
             </div>
           </div>

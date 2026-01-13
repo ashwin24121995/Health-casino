@@ -13,7 +13,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <img src="/images/health-mitan-logo.png" alt="Health Mitan" className="h-8 w-8" />
-              <h3 className="text-xl font-bold">LUCKY LOTUS</h3>
+              <h3 className="text-xl font-bold">HEALTH MITAN</h3>
             </div>
             <p className="text-sm text-gray-200 mb-4">
               Experience the thrill of premium social casino gaming with our community of players worldwide.
@@ -37,11 +37,6 @@ export default function Footer() {
               <li>
                 <Link href="/games">
                   <a className="hover:text-accent transition-colors">Games</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/games">
-                  <a className="hover:text-accent transition-colors">Play Now</a>
                 </Link>
               </li>
               <li>
@@ -136,7 +131,7 @@ export default function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-200 space-y-4 md:space-y-0">
           <p>
-            &copy; {currentYear} Lucky Lotus Casino. All rights reserved. | For amusement purposes only. Must be 21+
+            &copy; {currentYear} Health Mitan Private Limited. All rights reserved. | For amusement purposes only. Must be 18+
           </p>
           <p className="text-xs text-gray-300">
             Operated by: Health Mitan Private Limited | Address: C/O Murit Lal Karsh, Vill Kot, Kasdol, Raipur-493335, Chhattisgarh, India

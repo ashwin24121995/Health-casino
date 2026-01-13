@@ -17,7 +17,7 @@ export default function Disclaimer() {
             <div>
               <h2 className="text-2xl font-bold text-card-foreground mb-4">General Disclaimer</h2>
               <p className="text-muted-foreground mb-4">
-                This disclaimer ("Disclaimer") applies to the Lucky Lotus website and all related services operated by Health Mitan Private Limited. By accessing and using this platform, you acknowledge that you have read, understood, and agree to be bound by this Disclaimer.
+                This disclaimer ("Disclaimer") applies to the Health Mitan website and all related services operated by Health Mitan Private Limited. By accessing and using this platform, you acknowledge that you have read, understood, and agree to be bound by this Disclaimer.
               </p>
               <p className="text-muted-foreground">
                 If you do not agree with any part of this Disclaimer, please do not use our services.
@@ -28,7 +28,7 @@ export default function Disclaimer() {
             <div>
               <h2 className="text-2xl font-bold text-card-foreground mb-4">No Real Money Gambling</h2>
               <p className="text-muted-foreground mb-4">
-                <strong>IMPORTANT:</strong> Lucky Lotus is a SOCIAL CASINO platform for entertainment purposes only. This platform:
+                <strong>IMPORTANT:</strong> Health Mitan is a SOCIAL CASINO platform for entertainment purposes only. This platform:
               </p>
               <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-2">
                 <li>Does NOT offer real money gambling</li>
@@ -43,7 +43,7 @@ export default function Disclaimer() {
             <div>
               <h2 className="text-2xl font-bold text-card-foreground mb-4">Age Restriction</h2>
               <p className="text-muted-foreground mb-4">
-                Lucky Lotus is intended exclusively for users who are 21 years of age or older. By using this platform, you represent and warrant that:
+                Health Mitan is intended exclusively for users who are 21 years of age or older. By using this platform, you represent and warrant that:
               </p>
               <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-2">
                 <li>You are at least 21 years of age</li>
@@ -59,7 +59,7 @@ export default function Disclaimer() {
             <div>
               <h2 className="text-2xl font-bold text-card-foreground mb-4">No Warranty</h2>
               <p className="text-muted-foreground mb-4">
-                Lucky Lotus and all materials, information, and services on this platform are provided on an "AS IS" and "AS AVAILABLE" basis. Health Mitan Private Limited makes NO WARRANTIES, EXPRESS OR IMPLIED, including:
+                Health Mitan and all materials, information, and services on this platform are provided on an "AS IS" and "AS AVAILABLE" basis. Health Mitan Private Limited makes NO WARRANTIES, EXPRESS OR IMPLIED, including:
               </p>
               <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-2">
                 <li>Warranties of merchantability or fitness for a particular purpose</li>
@@ -125,7 +125,7 @@ export default function Disclaimer() {
             <div>
               <h2 className="text-2xl font-bold text-card-foreground mb-4">Third-Party Content and Links</h2>
               <p className="text-muted-foreground mb-4">
-                Lucky Lotus may contain links to third-party websites and services. We are NOT responsible for:
+                Health Mitan may contain links to third-party websites and services. We are NOT responsible for:
               </p>
               <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-2">
                 <li>The content, accuracy, or legality of third-party sites</li>
@@ -141,7 +141,7 @@ export default function Disclaimer() {
             <div>
               <h2 className="text-2xl font-bold text-card-foreground mb-4">Responsible Gaming</h2>
               <p className="text-muted-foreground mb-4">
-                While Lucky Lotus is a social gaming platform with no real money involved, we encourage responsible gaming habits:
+                While Health Mitan is a social gaming platform with no real money involved, we encourage responsible gaming habits:
               </p>
               <ul className="list-disc list-inside text-muted-foreground space-y-2 ml-2">
                 <li>Play for entertainment purposes only</li>
@@ -193,7 +193,7 @@ export default function Disclaimer() {
             <div className="border-t border-border pt-6">
               <p className="text-sm text-muted-foreground">
                 Last Updated: January 2026<br />
-                By using Lucky Lotus, you acknowledge that you have read, understood, and agree to this Disclaimer in its entirety.
+                By using Health Mitan, you acknowledge that you have read, understood, and agree to this Disclaimer in its entirety.
               </p>
             </div>
           </div>

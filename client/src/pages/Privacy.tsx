@@ -17,7 +17,7 @@ export default function Privacy() {
             <div>
               <h2 className="text-2xl font-bold text-card-foreground mb-4">Introduction</h2>
               <p className="text-muted-foreground mb-4">
-                Health Mitan Private Limited ("we", "us", "our", or "Company") operates the Lucky Lotus social casino platform. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services. Please read this policy carefully. If you do not agree with our policies and practices, please do not use our services.
+                Health Mitan Private Limited ("we", "us", "our", or "Company") operates the Health Mitan social casino platform. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services. Please read this policy carefully. If you do not agree with our policies and practices, please do not use our services.
               </p>
               <p className="text-muted-foreground">
                 We are committed to protecting your privacy and ensuring you have a positive experience on our platform. This Privacy Policy applies to all information collected through our website, mobile application, and related services.
