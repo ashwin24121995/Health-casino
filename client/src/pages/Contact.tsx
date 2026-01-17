@@ -76,21 +76,9 @@ export default function Contact() {
                 </p>
                 <div className="space-y-2">
                   <p className="text-muted-foreground">
-                    <strong>General Support:</strong><br />
-                    <a href="mailto:support@healthmitan.com" className="text-accent hover:underline">
-                      support@healthmitan.com
-                    </a>
-                  </p>
-                  <p className="text-muted-foreground">
-                    <strong>Technical Issues:</strong><br />
-                    <a href="mailto:tech@healthmitan.com" className="text-accent hover:underline">
-                      tech@healthmitan.com
-                    </a>
-                  </p>
-                  <p className="text-muted-foreground">
-                    <strong>Legal Inquiries:</strong><br />
-                    <a href="mailto:legal@healthmitan.com" className="text-accent hover:underline">
-                      legal@healthmitan.com
+                    <strong>Email Support:</strong><br />
+                    <a href="mailto:Support@pureplayfantasy.com" className="text-accent hover:underline">
+                      Support@pureplayfantasy.com
                     </a>
                   </p>
                 </div>
@@ -100,16 +88,17 @@ export default function Contact() {
                 <h3 className="text-lg font-semibold text-card-foreground mb-4">Company Information</h3>
                 <div className="space-y-3 text-muted-foreground text-sm">
                   <p>
-                    <strong>Health Mitan Private Limited</strong><br />
-                    C/O Murit Lal Karsh<br />
-                    Vill Kot, Kasdol<br />
-                    Raipur - 493335<br />
-                    Chhattisgarh, India
+                    <strong>AQUASTRUCT CONSTRUCTION PRIVATE LIMITED</strong><br />
+                    C/O Laxman Dass<br />
+                    Khandak, Panthal Katra<br />
+                    Panthal, Udhampur<br />
+                    Udhampur - 182320<br />
+                    Jammu and Kashmir, India
                   </p>
                   <p>
-                    <strong>CIN:</strong> U86909CT2023PTC014998<br />
-                    <strong>PAN:</strong> AWRPH8122K<br />
-                    <strong>GST:</strong> 22AAGCH9149C1ZR
+                    <strong>CIN:</strong> U41001JK2023PTC014834<br />
+                    <strong>PAN:</strong> AAZCA0661R<br />
+                    <strong>Email:</strong> Support@pureplayfantasy.com
                   </p>
                 </div>
               </div>

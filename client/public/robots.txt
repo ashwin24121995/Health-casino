@@ -1,5 +1,6 @@
-# Health Mitan - robots.txt
+# AQUASTRUCT - robots.txt
 # This file tells search engines which pages to crawl and which to avoid
+# Last Updated: January 2026
 
 User-agent: *
 Allow: /
@@ -19,4 +20,4 @@ Allow: /
 Crawl-delay: 1
 
 # Sitemap location
-Sitemap: https://healthmitan.com/sitemap.xml
+Sitemap: https://pureplayfantasy.com/sitemap.xml

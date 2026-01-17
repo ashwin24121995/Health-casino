@@ -7,7 +7,7 @@ export default function About() {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary via-purple-900 to-secondary py-20 text-white">
         <div className="container mx-auto px-4">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">About Health Mitan</h1>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">About AQUASTRUCT</h1>
           <p className="text-xl text-gray-200 max-w-2xl">
             Discover the story behind a premium social casino gaming platform dedicated to entertainment and fun.
           </p>
@@ -21,13 +21,13 @@ export default function About() {
             <div>
               <h2 className="text-4xl font-bold mb-6 text-foreground">Our Story</h2>
               <p className="text-lg text-muted-foreground mb-4">
-                Health Mitan was founded with a mission to create a safe, entertaining, and responsible gaming platform where players can enjoy premium social casino games completely free.
+                AQUASTRUCT was founded with a mission to create a safe, entertaining, and responsible gaming platform where players can enjoy premium social casino games completely free.
               </p>
               <p className="text-lg text-muted-foreground mb-4">
                 We believe that entertainment should be accessible to all. Our platform combines engaging games with a focus on player safety and responsible gaming practices.
               </p>
               <p className="text-lg text-muted-foreground">
-                Today, Health Mitan continues to innovate and deliver exceptional gaming experiences with a commitment to integrity, fairness, and community.
+                Today, AQUASTRUCT continues to innovate and deliver exceptional gaming experiences with a commitment to integrity, fairness, and community.
               </p>
             </div>
             <div>
@@ -79,7 +79,7 @@ export default function About() {
       {/* Why Choose Us */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-foreground">Why Choose Health Mitan?</h2>
+          <h2 className="text-4xl font-bold text-center mb-12 text-foreground">Why Choose AQUASTRUCT?</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="flex gap-4">
               <div className="text-4xl text-secondary">🎮</div>
@@ -130,23 +130,22 @@ export default function About() {
           <h2 className="text-4xl font-bold text-center mb-12 text-card-foreground">About Our Company</h2>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h3 className="text-2xl font-bold mb-4 text-card-foreground">Health Mitan Private Limited</h3>
+              <h3 className="text-2xl font-bold mb-4 text-card-foreground">AQUASTRUCT CONSTRUCTION PRIVATE LIMITED</h3>
               <p className="text-muted-foreground mb-6">
-                Health Mitan Private Limited is a registered company committed to providing safe, entertaining, and responsible gaming experiences. We operate with transparency, integrity, and a focus on player satisfaction.
+                AQUASTRUCT CONSTRUCTION PRIVATE LIMITED is a registered company committed to providing safe, entertaining, and responsible gaming experiences. We operate with transparency, integrity, and a focus on player satisfaction.
               </p>
               <div className="bg-background rounded-lg p-6 space-y-3">
-                <p className="text-muted-foreground"><strong>Legal Name:</strong> Health Mitan Private Limited</p>
-                <p className="text-muted-foreground"><strong>CIN:</strong> U86909CT2023PTC014998</p>
-                <p className="text-muted-foreground"><strong>PAN:</strong> AWRPH8122K</p>
-                <p className="text-muted-foreground"><strong>GST:</strong> 22AAGCH9149C1ZR</p>
-                <p className="text-muted-foreground"><strong>Address:</strong> C/O Murit Lal Karsh, Vill Kot, Kasdol, Raipur-493335, Chhattisgarh, India</p>
-                <p className="text-muted-foreground"><strong>Website:</strong> <a href="https://healthmitan.com/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">https://healthmitan.com/</a></p>
+                <p className="text-muted-foreground"><strong>Legal Name:</strong> AQUASTRUCT CONSTRUCTION PRIVATE LIMITED</p>
+                <p className="text-muted-foreground"><strong>CIN:</strong> U41001JK2023PTC014834</p>
+                <p className="text-muted-foreground"><strong>PAN:</strong> AAZCA0661R</p>
+                <p className="text-muted-foreground"><strong>Email:</strong> Support@pureplayfantasy.com</p>
+                <p className="text-muted-foreground"><strong>Address:</strong> C/O Laxman Dass, Khandak, Panthal Katra, Panthal, Udhampur, Udhampur, Jammu and Kashmir 182320, India</p>
               </div>
             </div>
             <div>
               <img
-                src="/images/health-mitan-logo.webp"
-                alt="Health Mitan Logo"
+                src="/images/aquastruct-logo.webp"
+                alt="AQUASTRUCT Logo"
                 className="rounded-xl shadow-2xl max-w-full h-auto"
               />
             </div>
@@ -160,7 +159,7 @@ export default function About() {
           <h2 className="text-4xl font-bold text-center mb-12">Responsible Gaming Commitment</h2>
           <div className="max-w-3xl mx-auto">
             <p className="text-lg mb-6 text-gray-200">
-              At Health Mitan, we are deeply committed to promoting responsible gaming. Our platform is designed for entertainment purposes only, with no real money involved.
+              At AQUASTRUCT, we are deeply committed to promoting responsible gaming. Our platform is designed for entertainment purposes only, with no real money involved.
             </p>
             <div className="grid md:grid-cols-2 gap-8">
               <div className="bg-white/10 rounded-lg p-6">
@@ -193,7 +192,7 @@ export default function About() {
             Join Our Community Today
           </h2>
           <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Experience premium social casino gaming with Health Mitan. Safe, entertaining, and completely free!
+            Experience premium social casino gaming with AQUASTRUCT. Safe, entertaining, and completely free!
           </p>
           <Link href="/games">
             <a className="no-underline">

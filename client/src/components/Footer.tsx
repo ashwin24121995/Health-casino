@@ -12,16 +12,16 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <img src="/images/health-mitan-logo.webp" alt="Health Mitan" className="h-8 w-8" />
-              <h3 className="text-xl font-bold">HEALTH MITAN</h3>
+              <img src="/images/aquastruct-logo.webp" alt="AQUASTRUCT" className="h-8 w-8" />
+              <h3 className="text-xl font-bold">AQUASTRUCT</h3>
             </div>
             <p className="text-sm text-gray-200 mb-4">
               Experience the thrill of premium social casino gaming with our community of players worldwide.
             </p>
             <p className="text-xs text-gray-300">
-              <strong>Health Mitan Private Limited</strong><br />
-              CIN: U86909CT2023PTC014998<br />
-              GST: 22AAGCH9149C1ZR
+              <strong>AQUASTRUCT CONSTRUCTION PRIVATE LIMITED</strong><br />
+              CIN: U41001JK2023PTC014834<br />
+              PAN: AAZCA0661R
             </p>
           </div>
 
@@ -95,22 +95,22 @@ export default function Footer() {
             <div className="space-y-3 text-sm">
               <div>
                 <p className="text-gray-300">Legal Name:</p>
-                <p className="font-semibold">HEALTH MITAN PRIVATE LIMITED</p>
+                <p className="font-semibold">AQUASTRUCT CONSTRUCTION PRIVATE LIMITED</p>
               </div>
               <div>
                 <p className="text-gray-300">CIN:</p>
-                <p className="font-semibold">U86909CT2023PTC014998</p>
+                <p className="font-semibold">U41001JK2023PTC014834</p>
               </div>
               <div>
                 <p className="text-gray-300">PAN:</p>
-                <p className="font-semibold">AWRPH8122K</p>
+                <p className="font-semibold">AAZCA0661R</p>
               </div>
               <div>
-                <p className="text-gray-300">GST:</p>
-                <p className="font-semibold">22AAGCH9149C1ZR</p>
+                <p className="text-gray-300">Email:</p>
+                <p className="font-semibold">Support@pureplayfantasy.com</p>
               </div>
               <div>
-                <p className="text-gray-300 text-xs">Address: C/O Murit Lal Karsh, Vill Kot, Kasdol, Raipur-493335, Chhattisgarh, India</p>
+                <p className="text-gray-300 text-xs">Address: C/O Laxman Dass, Khandak, Panthal Katra, Panthal, Udhampur, Udhampur, Jammu and Kashmir 182320, India</p>
               </div>
             </div>
           </div>
@@ -157,10 +157,10 @@ export default function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-200 space-y-4 md:space-y-0">
           <p>
-            &copy; {currentYear} Health Mitan Private Limited. All rights reserved. | For amusement purposes only. Must be 18+
+            &copy; {currentYear} AQUASTRUCT CONSTRUCTION PRIVATE LIMITED. All rights reserved. | For amusement purposes only. Must be 18+
           </p>
           <p className="text-xs text-gray-300">
-            Operated by: Health Mitan Private Limited | Address: C/O Murit Lal Karsh, Vill Kot, Kasdol, Raipur-493335, Chhattisgarh, India
+            Operated by: AQUASTRUCT CONSTRUCTION PRIVATE LIMITED | Support@pureplayfantasy.com | Address: C/O Laxman Dass, Khandak, Panthal Katra, Panthal, Udhampur, Udhampur, Jammu and Kashmir 182320, India
           </p>
         </div>
       </div>
