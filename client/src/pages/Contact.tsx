@@ -88,7 +88,7 @@ export default function Contact() {
                 <h3 className="text-lg font-semibold text-card-foreground mb-4">Company Information</h3>
                 <div className="space-y-3 text-muted-foreground text-sm">
                   <p>
-                    <strong>AQUA CONSTRUCTION PRIVATE LIMITED</strong><br />
+                    <strong>AQUASTRUCT CONSTRUCTION PRIVATE LIMITED</strong><br />
                     C/O Laxman Dass<br />
                     Khandak, Panthal Katra<br />
                     Panthal, Udhampur<br />

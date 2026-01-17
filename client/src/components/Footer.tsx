@@ -12,14 +12,14 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <img src="/images/aquastruct-logo.webp" alt="AQUA" className="h-8 w-8" />
-              <h3 className="text-xl font-bold">AQUA</h3>
+              <img src="/images/aquastruct-logo.webp" alt="AQUASTRUCT" className="h-8 w-8" />
+              <h3 className="text-xl font-bold">AQUASTRUCT</h3>
             </div>
             <p className="text-sm text-gray-200 mb-4">
               Experience the thrill of premium social casino gaming with our community of players worldwide.
             </p>
             <p className="text-xs text-gray-300">
-              <strong>AQUA CONSTRUCTION PRIVATE LIMITED</strong><br />
+              <strong>AQUASTRUCT CONSTRUCTION PRIVATE LIMITED</strong><br />
               CIN: U41001JK2023PTC014834<br />
               PAN: AAZCA0661R
             </p>
@@ -95,7 +95,7 @@ export default function Footer() {
             <div className="space-y-3 text-sm">
               <div>
                 <p className="text-gray-300">Legal Name:</p>
-                <p className="font-semibold">AQUA CONSTRUCTION PRIVATE LIMITED</p>
+                <p className="font-semibold">AQUASTRUCT CONSTRUCTION PRIVATE LIMITED</p>
               </div>
               <div>
                 <p className="text-gray-300">CIN:</p>
@@ -157,10 +157,10 @@ export default function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-200 space-y-4 md:space-y-0">
           <p>
-            &copy; {currentYear} AQUA CONSTRUCTION PRIVATE LIMITED. All rights reserved. | For amusement purposes only. Must be 18+
+            &copy; {currentYear} AQUASTRUCT CONSTRUCTION PRIVATE LIMITED. All rights reserved. | For amusement purposes only. Must be 18+
           </p>
           <p className="text-xs text-gray-300">
-            Operated by: AQUA CONSTRUCTION PRIVATE LIMITED | Support@pureplayfantasy.com | Address: C/O Laxman Dass, Khandak, Panthal Katra, Panthal, Udhampur, Udhampur, Jammu and Kashmir 182320, India
+            Operated by: AQUASTRUCT CONSTRUCTION PRIVATE LIMITED | Support@pureplayfantasy.com | Address: C/O Laxman Dass, Khandak, Panthal Katra, Panthal, Udhampur, Udhampur, Jammu and Kashmir 182320, India
           </p>
         </div>
       </div>
