@@ -144,9 +144,9 @@ export default function About() {
             </div>
             <div className="flex justify-center items-center">
               <img
-                src="/images/cc-innovations-logo.png"
+                src="/images/cc-innovations-logo.webp"
                 alt="CC INNOVATIONS Logo"
-                className="max-w-xs h-auto"
+                className="max-w-sm h-auto"
               />
             </div>
           </div>

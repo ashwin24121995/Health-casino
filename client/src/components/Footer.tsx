@@ -12,7 +12,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <img src="/images/cc-innovations-logo.png" alt="CC INNOVATIONS" className="h-8 w-8" />
+              <img src="/images/cc-innovations-logo.webp" alt="CC INNOVATIONS" className="h-11 w-11" />
               <h3 className="text-xl font-bold">CC INNOVATIONS</h3>
             </div>
             <p className="text-sm text-gray-200 mb-4">
