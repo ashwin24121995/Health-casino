@@ -142,11 +142,11 @@ export default function About() {
                 <p className="text-muted-foreground"><strong>Address:</strong> C/O N K SHARMA SEC 9 TYPE, BT QR NO 463. HEC, Dhurwa, Ranchi, Ranchi, Jharkhand 834004, India</p>
               </div>
             </div>
-            <div>
+            <div className="flex justify-center items-center">
               <img
                 src="/images/cc-innovations-logo.png"
                 alt="CC INNOVATIONS Logo"
-                className="rounded-xl shadow-2xl max-w-full h-auto"
+                className="max-w-xs h-auto"
               />
             </div>
           </div>
