@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Sparkles, Users, Gift, Trophy, CheckCircle, XCircle } from "lucide-react";
+import { PROMO_WIDGET_ENABLED } from "@/components/PromoWidget";
 
 export default function Home() {
+  // Ensure PromoWidget is not tree-shaken
+  if (PROMO_WIDGET_ENABLED) {
+    // Silent check
+  }
+  
   // Deployment trigger - Updated February 4, 2026
   const games = [
     {
