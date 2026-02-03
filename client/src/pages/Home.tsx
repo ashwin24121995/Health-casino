@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Sparkles, Users, Gift, Trophy, CheckCircle, XCircle } from "lucide-react";
 
 export default function Home() {
+  // Deployment trigger - Updated February 4, 2026
   const games = [
     {
       id: "mines",
