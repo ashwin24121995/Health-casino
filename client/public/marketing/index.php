@@ -527,7 +527,7 @@
                 <p>CC INNOVATIONS provides this platform "as is" without any warranties. We are not responsible for any technical issues, interruptions, or losses that may occur. Users assume all risks associated with using this platform.</p>
 
                 <h4>Last Updated</h4>
-                <p>This disclaimer was last updated on February 3, 2026. We reserve the right to update these terms at any time.</p>
+                <p>This disclaimer was last updated on February 4, 2026. We reserve the right to update these terms at any time.</p>
             </div>
         </div>
     </section>
